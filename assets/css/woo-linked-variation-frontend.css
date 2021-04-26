@@ -1,0 +1,41 @@
+.woo-linked-variation-wrap ul.linked-variations-buttons {
+    margin    : 0;
+    padding   : 0;
+    list-style: none;
+    display   : inline-block;
+}
+
+.woo-linked-variation-wrap .woo-linked-variation {
+    margin-bottom: 1em;
+}
+
+.woo-linked-variation-wrap .linked-variation-label {
+    margin-bottom: 0.5em;
+}
+
+.woo-linked-variation-wrap ul.linked-variations-buttons li {
+    display  : inline-block;
+    max-width: 80px;
+    margin   : 0 10px 0 0;
+}
+
+.woo-linked-variation-wrap ul.linked-variations-buttons img {
+    width : 100%;
+    height: auto;
+}
+
+.woo-linked-variation-wrap ul.linked-variations-buttons span,
+.woo-linked-variation-wrap ul.linked-variations-buttons a {
+    display    : block;
+    border     : 1px solid #ccc;
+    padding    : 4px 10px;
+    white-space: nowrap;
+}
+
+.woo-linked-variation-wrap ul.linked-variations-buttons span:hover,
+.woo-linked-variation-wrap ul.linked-variations-buttons a:hover {}
+
+.woo-linked-variation-wrap ul.linked-variations-buttons span.active-variation {
+    border    : 1px solid #0093df;
+    background: #e8f4fc;
+}

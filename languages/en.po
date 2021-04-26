@@ -1,0 +1,130 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Linked Variation for WooCommerce\n"
+"POT-Creation-Date: 2020-10-29 02:58+0600\n"
+"PO-Revision-Date: 2020-10-29 02:58+0600\n"
+"Last-Translator: \n"
+"Language-Team: raazzon@gmail.com\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;esc_html__;esc_attr__;_x\n"
+"X-Poedit-SearchPath-0: languages\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: includes/class-functions.php:31 includes/class-functions.php:33
+#: includes/class-functions.php:38
+msgid "Woo Linked Variations"
+msgstr ""
+
+#: includes/class-functions.php:32 includes/class-functions.php:34
+#: includes/class-functions.php:60
+msgid "Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:35
+msgid "Woo Linked Variation Archives"
+msgstr ""
+
+#: includes/class-functions.php:36
+msgid "Woo Linked Variation Attributes"
+msgstr ""
+
+#: includes/class-functions.php:37
+msgid "Parent Woo Linked Variation:"
+msgstr ""
+
+#: includes/class-functions.php:39
+msgid "Add New Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:40
+msgid "Add New Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:41
+msgid "New Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:42
+msgid "Edit Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:43
+msgid "Update Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:44
+msgid "View Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:45
+msgid "View Woo Linked Variations"
+msgstr ""
+
+#: includes/class-functions.php:46
+msgid "Search Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:47
+msgid "No linked variations found"
+msgstr ""
+
+#: includes/class-functions.php:48
+msgid "Not found in Trash"
+msgstr ""
+
+#: includes/class-functions.php:49
+msgid "Featured Image"
+msgstr ""
+
+#: includes/class-functions.php:50
+msgid "Set featured image"
+msgstr ""
+
+#: includes/class-functions.php:51
+msgid "Remove featured image"
+msgstr ""
+
+#: includes/class-functions.php:52
+msgid "Use as featured image"
+msgstr ""
+
+#: includes/class-functions.php:53
+msgid "Insert into Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:54
+msgid "Uploaded to this Woo Linked Variation"
+msgstr ""
+
+#: includes/class-functions.php:55
+msgid "Woo Linked Variations list"
+msgstr ""
+
+#: includes/class-functions.php:56
+msgid "Woo Linked Variations list navigation"
+msgstr ""
+
+#: includes/class-functions.php:57
+msgid "Filter Woo Linked Variations list"
+msgstr ""
+
+#: includes/class-functions.php:61
+msgid "WooCommerce Linked Variations"
+msgstr ""
+
+#: includes/class-functions.php:90
+msgid "General Settings"
+msgstr ""
+
+#: includes/class-functions.php:529
+msgid ""
+"not operational, This plugin only work when <a href=\"https://wordpress.org/"
+"plugins/woocommerce/\" target=\"_blank\">WooCommerce plugin</a> is active."
+msgstr ""

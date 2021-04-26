@@ -1,0 +1,23 @@
+#sortable li {
+    display: flex;
+    padding: 10px 15px;
+}
+
+#sortable li .inputs {
+    display  : flex;
+    flex-grow: 2;
+}
+
+#sortable li .inputs label {
+    margin-right: 20px;
+    flex        : 0 0 20%;
+}
+
+#sortable li .inputs label:last-child {
+    margin-right: 0;
+}
+
+#sortable li span {
+    flex-grow : 1;
+    text-align: right;
+}

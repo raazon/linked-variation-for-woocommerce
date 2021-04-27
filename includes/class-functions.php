@@ -4,8 +4,21 @@
  */
 class WooLinkedVariation
 {
-    // init hooks
-    public static function init()
+    // Hold the class instance.
+    private static $instance = null;
+
+    // The object is created from within the class itself
+    // only if the class has no instance.
+    public static function getInstance() {
+        if (self::$instance == null) {
+            self::$instance = new WooLinkedVariation();
+        }
+
+        return self::$instance;
+    }
+
+    // to prevent initiation with outer code.
+    public function __construct()
     {
         if (is_admin() && is_plugin_active('woocommerce/woocommerce.php')) {
             add_action('init', array(__CLASS__, 'create_woolinkedvariation_cpt'), 10, 1);
@@ -304,19 +317,20 @@ class WooLinkedVariation
 
     public static function render_linked_variation()
     {
+        // get linked variation
         $product = wc_get_product(get_the_ID());
         $linked_variation_id = get_post_meta($product->get_id(), 'linked_variation_id', true);
         if (!$linked_variation_id || 'publish' !== get_post_status($linked_variation_id)) {
             return;
         }
 
+        // get linked by (attributes) value
         $_linked_by_attributes = get_post_meta($linked_variation_id, '_linked_by_attributes', true);
         $show_images = get_post_meta($linked_variation_id, 'show_images', true);
 
         // get grouped products
         $linked_variation_products = get_post_meta($linked_variation_id, 'linked_variation_products', true);
         $exclude_current_product = array_diff($linked_variation_products, array($product->get_id()));
-        $all_taxonomies = [];
 
         // $attributeX = wc_get_attribute($_linked_by_attribute);
         $filter_assigned_attributes = array_filter($product->get_attributes(), 'wc_attributes_array_filter_visible');
@@ -325,10 +339,14 @@ class WooLinkedVariation
         foreach ($get_assigned_attributes as $get_assigned_attribute) {
             $product_attributes[$get_assigned_attribute] = wc_get_product_terms($product->get_id(), $get_assigned_attribute, array('fields' => 'slugs'));
         }
+        var_dump($product_attributes);
 
-        if ($_linked_by_attributes) : ?>
+        // render variations
+        if ($_linked_by_attributes && !empty($product_attributes)) : ?>
             <div class="woo-linked-variation-wrap">
                 <?php
+                    var_dump($_linked_by_attributes);
+                $all_taxonomies = [];
                 foreach ($_linked_by_attributes as $key => $_linked_by_attribute) :
                     $attribute = wc_get_attribute($_linked_by_attribute);
                     $terms = get_terms($attribute->slug, array(
@@ -546,4 +564,4 @@ class WooLinkedVariation
     }
 }
 
-WooLinkedVariation::init();
+WooLinkedVariation::getInstance();

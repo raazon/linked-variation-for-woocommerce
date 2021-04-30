@@ -353,6 +353,41 @@ class WooLinkedVariation
         return false;
     }
 
+    // get primary products
+    public function get_primary_products($taxonomy = '', $linked_variation_products = []) {
+        
+        $terms = wc_get_product_terms(get_the_ID(), $taxonomy);
+        $args = [
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+        ];
+
+        if ($terms) {
+            $termsArray = (array) $terms[0];
+            $args['post__in']  = $linked_variation_products;
+            $args['tax_query'] = [
+                'relation' => 'AND',
+                [
+                    'taxonomy'  => $taxonomy,
+                    'field'     => 'slug',
+                    'terms'     =>  [$termsArray['slug']],
+                    'operator'  => 'NOT IN',
+                ]
+            ];
+        }
+
+        $getProducts = get_posts($args);
+        $product_ids = [];
+        if($getProducts){
+            $product_ids = wp_list_pluck($getProducts, 'ID');
+        }
+        
+        array_unshift($product_ids, get_the_ID());
+
+        return $product_ids;
+    }
+
     // shorting variations - 1
     public function shorting_variations($linked_variation_id = '') {
 
@@ -423,7 +458,8 @@ class WooLinkedVariation
                 ]
             ];
         } elseif($is_primary === true) {
-            $args['post__in']  = [85, 86, 87];
+            $get_primary_products = $this->get_primary_products($taxonomy, $linked_variation_products);
+            $args['post__in']  = $get_primary_products ? $get_primary_products : $linked_variation_products;
             $args['tax_query'] = [
                 'relation' => 'AND',
                 [
@@ -433,6 +469,7 @@ class WooLinkedVariation
                     'operator'  => 'EXISTS',
                 ]
             ];
+            $args['order']     = 'ASC';
         } else {
             $args['post__in']  = $linked_variation_products;
             $args['tax_query'] = [
@@ -485,8 +522,9 @@ class WooLinkedVariation
         // get linked variations
         $variations = $this->get_linked_variations();
 
+        $xxxxxxxxxxxxxxx = $this->get_primary_products('pa_color', [78, 85,86,87,88]);
         echo '<pre>';
-        var_dump($variations);
+        var_dump($xxxxxxxxxxxxxxx);
         echo '</pre>';
 
         if ($variations) :

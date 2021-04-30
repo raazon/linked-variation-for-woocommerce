@@ -37,15 +37,16 @@ function woo_linked_variation_load_textdomain()
 }
 
 // Declering Constant
-define('LINKED_VARIATION_FOR_WOOCOMMERCE_VERSION', '1.0.0'); // Currently plugin version.
-define('LINKED_VARIATION_FOR_WOOCOMMERCE_FILE', __FILE__);
-define('LINKED_VARIATION_FOR_WOOCOMMERCE_BASENAME', plugin_basename(__FILE__));
-define('LINKED_VARIATION_FOR_WOOCOMMERCE_PATH', plugin_dir_path(__FILE__));
+define('LVFW_VERSION', '1.0.0'); // Currently plugin version.
+define('LVFW_FILE', __FILE__);
+define('LVFW_BASENAME', plugin_basename(__FILE__));
+define('LVFW_PATH', plugin_dir_path(__FILE__));
+define('LVFW_INCLUDE_PATH', trailingslashit(LVFW_PATH) . 'includes/');
 
 // The code that runs during plugin activation.
 function activate_woo_linked_variation()
 {
-    require_once LINKED_VARIATION_FOR_WOOCOMMERCE_PATH . '/includes/class-activator.php';
+    require_once LVFW_PATH . '/includes/class-activator.php';
 }
 register_activation_hook(__FILE__, 'activate_woo_linked_variation');
 
@@ -53,10 +54,10 @@ register_activation_hook(__FILE__, 'activate_woo_linked_variation');
 // The code that runs during plugin deactivation.
 function deactivate_woo_linked_variation()
 {
-    require_once LINKED_VARIATION_FOR_WOOCOMMERCE_PATH . '/includes/class-deactivator.php';
+    require_once LVFW_PATH . '/includes/class-deactivator.php';
 }
 register_deactivation_hook(__FILE__, 'deactivate_woo_linked_variation');
 
 
 // Loading init file
-require_once LINKED_VARIATION_FOR_WOOCOMMERCE_PATH . '/includes/init.php';
+require_once LVFW_PATH . '/includes/init.php';

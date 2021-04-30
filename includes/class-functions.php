@@ -29,7 +29,7 @@ class WooLinkedVariation
             add_action('wp_ajax_linked_by_attributes_ordering', array(__CLASS__, 'linked_by_attributes_ordering'));
         }
 
-        add_action('woocommerce_before_add_to_cart_form', array(__CLASS__, 'render_linked_variation'), 10, 0);
+        add_action('woocommerce_before_add_to_cart_form', array($this, 'render_linked_variation_2'), 10, 0);
         add_action('wp_enqueue_scripts', array(__CLASS__, 'frontend_enqueue_scripts'), 10, 1);
 
         if (is_admin() && !is_plugin_active('woocommerce/woocommerce.php')) {
@@ -315,6 +315,7 @@ class WooLinkedVariation
         die();
     }
 
+    // render linked variation
     public static function render_linked_variation()
     {
         // get linked variation
@@ -339,13 +340,12 @@ class WooLinkedVariation
         foreach ($get_assigned_attributes as $get_assigned_attribute) {
             $product_attributes[$get_assigned_attribute] = wc_get_product_terms($product->get_id(), $get_assigned_attribute, array('fields' => 'slugs'));
         }
-        var_dump($product_attributes);
 
         // render variations
         if ($_linked_by_attributes && !empty($product_attributes)) : ?>
             <div class="woo-linked-variation-wrap">
                 <?php
-                    var_dump($_linked_by_attributes);
+                var_dump($_linked_by_attributes);
                 $all_taxonomies = [];
                 foreach ($_linked_by_attributes as $key => $_linked_by_attribute) :
                     $attribute = wc_get_attribute($_linked_by_attribute);
@@ -507,13 +507,94 @@ class WooLinkedVariation
         <?php endif;
     }
 
+
+
+    // Get linked variations
+    public function get_linked_variations($linked_variation_id = '') {
+        // get linked by (attributes) value by vaiation id
+        $_linked_by_attributes = get_post_meta($linked_variation_id, '_linked_by_attributes', true);
+        $show_images = get_post_meta($linked_variation_id, 'show_images', true);
+
+        // process variations
+        $attributes = [];
+        foreach($_linked_by_attributes as $key => $_linked_by_attribute){
+            $attribute = wc_get_attribute($_linked_by_attribute);
+            array_push($attributes, $attribute->slug);
+            $attributes[$key] = [
+                'id'            => $attribute->id,
+                'name'          => $attribute->name,
+                'slug'          => $attribute->slug,
+                'show_image'    => in_array($_linked_by_attribute, $show_images) ? true : false,
+            ];
+        }
+
+        return $attributes;
+    }
+
+    public function render_linked_variation_2()
+    {
+        // get linked variation
+        $linked_variation_id = get_post_meta(get_the_ID(), 'linked_variation_id', true);
+        if (!$linked_variation_id || 'publish' !== get_post_status($linked_variation_id)) {
+            return;
+        }
+
+        // get grouped products
+        $linked_variation_products = get_post_meta($linked_variation_id, 'linked_variation_products', true);
+        $exclude_current_product = array_diff($linked_variation_products, array(get_the_ID()));
+        // var_dump($linked_variation_products);
+
+        $product = wc_get_product(get_the_ID());
+        $filter_assigned_attributes = array_filter($product->get_attributes(), 'wc_attributes_array_filter_visible');
+        $get_assigned_attributes = array_keys($filter_assigned_attributes);
+        // var_dump($get_assigned_attributes);
+
+
+
+        $variations = $this->get_linked_variations($linked_variation_id);
+
+        // get products
+        $all_products = [];
+        foreach($variations as $attribute){
+
+            $args = [
+                'post_type'      => 'product',
+                'post_status'    => 'publish',
+                'posts_per_page' => -1,
+                'post__in'       => $linked_variation_products,
+                'tax_query'      => [
+                    [
+                        'taxonomy'  => $attribute['slug'],
+                        'field'     => 'slug',
+                        'terms'     =>  [],
+                        'operator'  => 'EXISTS',
+                    ]
+                ]
+            ];
+
+            // The query
+            $getProducts = get_posts($args);
+
+            echo '<pre>';
+            var_dump(count($getProducts));
+            echo '</pre>';
+
+        }
+
+
+
+
+            wp_reset_postdata();
+
+    }
+
     // return post id
     public static function get_filter_product_id($tax_query, $exclude_current_product = [], $order = 'ASC')
     {
         $args =  [
-            'post_type' => 'product',
-            'posts_per_page' => -1,
-            'order' => $order,
+            'post_type'         => 'product',
+            'posts_per_page'    => -1,
+            'order'             => $order,
         ];
 
         if ($tax_query) {

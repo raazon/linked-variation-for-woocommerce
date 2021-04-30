@@ -521,10 +521,9 @@ class WooLinkedVariation
     {
         // get linked variations
         $variations = $this->get_linked_variations();
-
-        $xxxxxxxxxxxxxxx = $this->get_primary_products('pa_color', [78, 85,86,87,88]);
+        
         echo '<pre>';
-        var_dump($xxxxxxxxxxxxxxx);
+        var_dump($variations);
         echo '</pre>';
 
         if ($variations) :

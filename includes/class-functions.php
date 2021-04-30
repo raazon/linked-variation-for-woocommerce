@@ -4,6 +4,7 @@
  */
 class WooLinkedVariation
 {
+
     // Hold the class instance.
     private static $instance = null;
 
@@ -22,26 +23,26 @@ class WooLinkedVariation
     public function __construct()
     {
         if (is_admin() && is_plugin_active('woocommerce/woocommerce.php')) {
-            add_action('init', array(__CLASS__, 'create_woolinkedvariation_cpt'), 10, 1);
-            add_action('add_meta_boxes', array(__CLASS__, 'add_meta_box'), 10, 1);
-            add_action('save_post', array(__CLASS__, 'save'), 10, 1);
+            add_action('init', array($this, 'create_woolinkedvariation_cpt'), 10, 1);
+            add_action('add_meta_boxes', array($this, 'add_meta_box'), 10, 1);
+            add_action('save_post', array($this, 'save'), 10, 1);
 
-            add_action('admin_enqueue_scripts', array(__CLASS__, 'admin_enqueue_scripts'), 10, 1);
-            add_action('wp_ajax_linked_by_attributes_ordering', array(__CLASS__, 'linked_by_attributes_ordering'));
+            add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'), 10, 1);
+            add_action('wp_ajax_linked_by_attributes_ordering', array($this, 'linked_by_attributes_ordering'));
         }
 
-        add_action('woocommerce_before_add_to_cart_form', array($this, 'render_linked_variation_2'), 10, 0);
-        add_action('wp_enqueue_scripts', array(__CLASS__, 'frontend_enqueue_scripts'), 10, 1);
+        add_action('woocommerce_before_add_to_cart_form', array($this, 'render_linked_variation_frontend'), 10, 0);
+        add_action('wp_enqueue_scripts', array($this, 'frontend_enqueue_scripts'), 10, 1);
 
         if (is_admin() && !is_plugin_active('woocommerce/woocommerce.php')) {
-            add_action('admin_notices', array(__CLASS__, 'admin_notice_warning'));
+            add_action('admin_notices', array($this, 'admin_notice_warning'));
         }
 
-        add_filter('plugin_action_links_' . LVFW_BASENAME, array(__CLASS__, 'add_plugin_action_links'));
+        add_filter('plugin_action_links_' . LVFW_BASENAME, array($this, 'add_plugin_action_links'));
     }
 
     // Register Custom Post Type Woo Linked Variation
-    public static function create_woolinkedvariation_cpt()
+    public function create_woolinkedvariation_cpt()
     {
         $labels = array(
             'name' => _x('Woo Linked Variations', 'Post Type General Name', 'linked-variation-for-woocommerce'),
@@ -97,14 +98,14 @@ class WooLinkedVariation
     }
 
     // Adds the meta box container.
-    public static function add_meta_box($post_type)
+    public function add_meta_box($post_type)
     {
         $post_types = ['woolinkedvariation'];
         if (in_array($post_type, $post_types)) {
             add_meta_box(
                 'general-settings',
                 __('General Settings', 'linked-variation-for-woocommerce'),
-                array(__CLASS__, 'render_meta_box_content'),
+                array($this, 'render_meta_box_content'),
                 $post_type,
                 'advanced',
                 'high'
@@ -117,7 +118,7 @@ class WooLinkedVariation
      *
      * @param WP_Post $post The post object.
      */
-    public static function render_meta_box_content($post)
+    public function render_meta_box_content($post)
     {
         // Add an nonce field so we can check for it later.
         wp_nonce_field('woo_linked_variation_products_nonce_action', 'woo_linked_variation_products_nonce');
@@ -162,16 +163,13 @@ class WooLinkedVariation
                                 <li id="<?php echo esc_attr($key); ?>" class="ui-state-default">
                                     <div class="inputs">
                                         <label for="attribute-<?php echo esc_attr($key); ?>">
-                                            <input type="checkbox" name="_linked_by_attributes[]" id="attribute-<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $_linked_by_attributes)) ?>>
-                                            <?php echo esc_attr($attribute); ?>
+                                            <input type="checkbox" name="_linked_by_attributes[]" id="attribute-<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $_linked_by_attributes)) ?>> <?php echo esc_attr($attribute); ?>
                                         </label>
                                         <label for="show-image-<?php echo esc_attr($key); ?>">
-                                            <input type="checkbox" name="show_images[]" id="show-image-<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $show_images)) ?>>
-                                            <?php esc_html_e('Show images', 'linked-variation-for-woocommerce'); ?>
+                                            <input type="checkbox" name="show_images[]" id="show-image-<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $show_images)) ?>> <?php esc_html_e('Show images', 'linked-variation-for-woocommerce'); ?>
                                         </label>
                                         <label for="is-primary-<?php echo esc_attr($key); ?>">
-                                            <input type="checkbox" name="is_primary[]" id="is-primary-<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $is_primary)) ?>>
-                                            <?php esc_html_e('Primary', 'linked-variation-for-woocommerce'); ?>
+                                            <input type="checkbox" name="is_primary[]" id="is-primary-<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($key); ?>" <?php checked(in_array($key, $is_primary)) ?>> <?php esc_html_e('Primary', 'linked-variation-for-woocommerce'); ?>
                                         </label>
                                     </div>
                                     <span class="dashicons dashicons-move"></span>
@@ -198,7 +196,7 @@ class WooLinkedVariation
      *
      * @param int $post_id The ID of the post being saved.
      */
-    public static function save($post_id)
+    public function save($post_id)
     {
         /*
          * We need to verify this came from the our screen and with proper authorization,
@@ -281,7 +279,7 @@ class WooLinkedVariation
     }
 
     // admin enqueue scripts
-    public static function admin_enqueue_scripts($hook)
+    public function admin_enqueue_scripts($hook)
     {
         // get current admin screen, or null
         $screen = get_current_screen();
@@ -306,7 +304,7 @@ class WooLinkedVariation
     }
 
     // update linked_by_attributes_ordering ajax function
-    public static function linked_by_attributes_ordering()
+    public function linked_by_attributes_ordering()
     {
         $ordering = isset($_POST['ordering']) ? $_POST['ordering'] : '';
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : '';
@@ -329,226 +327,38 @@ class WooLinkedVariation
         die();
     }
 
-    // render linked variation
-    public static function render_linked_variation()
-    {
-        // get linked variation
-        $product = wc_get_product(get_the_ID());
-        $linked_variation_id = get_post_meta($product->get_id(), 'linked_variation_id', true);
-        if (!$linked_variation_id || 'publish' !== get_post_status($linked_variation_id)) {
-            return;
+    // Get all primary variations
+    public function get_primary_variations($id, $array) {
+
+        $all_primary = [];
+        foreach ($array as $key => $val) {
+            if ($val['is_primary'] === $id) {
+                $all_primary[$key] = $key;
+            }
         }
-
-        // get linked by (attributes) value
-        $_linked_by_attributes = get_post_meta($linked_variation_id, '_linked_by_attributes', true);
-        $show_images = get_post_meta($linked_variation_id, 'show_images', true);
-
-        // get grouped products
-        $linked_variation_products = get_post_meta($linked_variation_id, 'linked_variation_products', true);
-        $exclude_current_product = array_diff($linked_variation_products, array($product->get_id()));
-
-        // $attributeX = wc_get_attribute($_linked_by_attribute);
-        $filter_assigned_attributes = array_filter($product->get_attributes(), 'wc_attributes_array_filter_visible');
-        $get_assigned_attributes = array_keys($filter_assigned_attributes);
-        $product_attributes = [];
-        foreach ($get_assigned_attributes as $get_assigned_attribute) {
-            $product_attributes[$get_assigned_attribute] = wc_get_product_terms($product->get_id(), $get_assigned_attribute, array('fields' => 'slugs'));
-        }
-
-        // render variations
-        if ($_linked_by_attributes && !empty($product_attributes)) : ?>
-            <div class="woo-linked-variation-wrap">
-                <?php
-                var_dump($_linked_by_attributes);
-                $all_taxonomies = [];
-                foreach ($_linked_by_attributes as $key => $_linked_by_attribute) :
-                    $attribute = wc_get_attribute($_linked_by_attribute);
-                    $terms = get_terms($attribute->slug, array(
-                        'hide_empty' => true,
-                    ));
-                    $current_term = $product->get_attribute($attribute->slug);
-                    array_push($all_taxonomies, $attribute->slug);
-                ?>
-                    <div class="woo-linked-variation">
-                        <div class="linked-variation-label">
-                            <strong class="variation-label"><?php echo esc_html($attribute->name); ?>: </strong>
-                            <span class="variation-selection" data-variant="<?php echo esc_attr($current_term); ?>"><?php echo esc_html($current_term); ?></span>
-                        </div>
-                        <?php if ($terms) : ?>
-                            <div class="linked-variations">
-                                <ul class="linked-variations-buttons">
-                                    <?php foreach ($terms as $term_key => $term) : ?>
-                                        <?php if ($key === 0) : ?>
-                                            <li class="linked-variations-item" data-variant="<?php echo esc_attr($term->name); ?>">
-                                                <?php if ($current_term === $term->name) :
-                                                    $tax_query_count = 0;
-                                                    $tax_query = [];
-                                                    foreach ($product_attributes as $product_attribute_key => $product_attribute) {
-                                                        $tax_query[$tax_query_count]['taxonomy']    = $product_attribute_key;
-                                                        $tax_query[$tax_query_count]['field']       = 'slug';
-                                                        $tax_query[$tax_query_count]['terms']       = $product_attribute;
-                                                        $tax_query[$tax_query_count]['operator']    = 'IN';
-                                                        $tax_query_count++;
-                                                    }
-
-                                                    $filter_product_id = self::get_filter_product_id(
-                                                        [
-                                                            'relation' => 'AND',
-                                                            $tax_query
-                                                        ],
-                                                        [$product->get_id()]
-                                                    );
-                                                    if ($filter_product_id) : ?>
-                                                        <span class="variation-item active-variation" title="<?php echo esc_attr(get_the_title($filter_product_id)); ?>">
-                                                            <?php if (in_array($_linked_by_attribute, $show_images)) : ?>
-                                                                <img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($filter_product_id), 'thumbnail') ?>" alt="<?php echo esc_attr($term->name); ?>" />
-                                                            <?php else : ?>
-                                                                <?php echo esc_html($term->name);  ?>
-                                                            <?php endif; ?>
-                                                        </span>
-                                                    <?php endif;
-                                                else :
-                                                    $tax_query_count = 0;
-                                                    $tax_query = [];
-                                                    foreach ($product_attributes as $product_attribute_key => $product_attribute) {
-                                                        if ($term->taxonomy != $product_attribute_key) {
-                                                            $tax_query[$tax_query_count]['taxonomy']    = $product_attribute_key;
-                                                            $tax_query[$tax_query_count]['field']       = 'slug';
-                                                            $tax_query[$tax_query_count]['terms']       = $product_attribute;
-                                                            $tax_query[$tax_query_count]['operator']    = 'IN';
-                                                            $tax_query_count++;
-                                                        }
-                                                    }
-
-                                                    $filter_product_id = self::get_filter_product_id(
-                                                        [
-                                                            'relation' => 'AND',
-                                                            [
-                                                                'taxonomy'        => $term->taxonomy,
-                                                                'field'           => 'slug',
-                                                                'terms'           => [$term->slug],
-                                                                'operator'        => 'IN',
-                                                            ],
-                                                            $tax_query
-                                                        ],
-                                                        $exclude_current_product
-                                                    );
-                                                    if ($filter_product_id) : ?>
-                                                        <a href="<?php echo get_the_permalink($filter_product_id); ?>" title="<?php echo esc_attr(get_the_title($filter_product_id)); ?>" class="variation-item">
-                                                            <?php if (in_array($_linked_by_attribute, $show_images)) : ?>
-                                                                <img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($filter_product_id), 'thumbnail') ?>" alt="<?php echo esc_attr($term->name); ?>" />
-                                                            <?php else : ?>
-                                                                <?php echo esc_html($term->name); ?>
-                                                            <?php endif; ?>
-                                                        </a>
-                                                <?php endif;
-                                                endif; ?>
-                                            </li>
-                                        <?php else : ?>
-                                            <li class="linked-variations-item" data-variant="<?php echo esc_attr($term->name); ?>">
-                                                <?php if ($current_term === $term->name) :
-                                                    $tax_query_count = 0;
-                                                    $tax_query = [];
-                                                    foreach ($product_attributes as $product_attribute_key => $product_attribute) {
-                                                        $tax_query[$tax_query_count]['taxonomy']    = $product_attribute_key;
-                                                        $tax_query[$tax_query_count]['field']       = 'slug';
-                                                        $tax_query[$tax_query_count]['terms']       = $product_attribute;
-                                                        $tax_query[$tax_query_count]['operator']    = 'IN';
-                                                        $tax_query_count++;
-                                                    }
-
-                                                    $filter_product_id = self::get_filter_product_id(
-                                                        [
-                                                            'relation' => 'AND',
-                                                            $tax_query
-                                                        ],
-                                                        [$product->get_id()]
-                                                    );
-                                                    if ($filter_product_id) : ?>
-                                                        <span class="variation-item active-variation" title="<?php echo esc_attr(get_the_title($filter_product_id)); ?>">
-                                                            <?php if (in_array($_linked_by_attribute, $show_images)) : ?>
-                                                                <img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($filter_product_id), 'thumbnail') ?>" alt="<?php echo esc_attr($term->name); ?>" />
-                                                            <?php else : ?>
-                                                                <?php echo esc_html($term->name);  ?>
-                                                            <?php endif; ?>
-                                                        </span>
-                                                    <?php endif;
-                                                else :
-                                                    $tax_query_count = 0;
-                                                    $tax_query = [];
-                                                    foreach ($product_attributes as $product_attribute_key => $product_attribute) {
-                                                        if ($term->taxonomy != $product_attribute_key) {
-                                                            $tax_query[$tax_query_count]['taxonomy']    = $product_attribute_key;
-                                                            $tax_query[$tax_query_count]['field']       = 'slug';
-                                                            $tax_query[$tax_query_count]['terms']       = $product_attribute;
-                                                            $tax_query[$tax_query_count]['operator']    = 'IN';
-                                                            $tax_query_count++;
-                                                        }
-                                                    }
-
-                                                    $filter_product_id = self::get_filter_product_id(
-                                                        [
-                                                            'relation' => 'AND',
-                                                            [
-                                                                'taxonomy'        => $term->taxonomy,
-                                                                'field'           => 'slug',
-                                                                'terms'           => [$term->slug],
-                                                                'operator'        => 'IN',
-                                                            ],
-                                                            $tax_query
-                                                        ],
-                                                        $exclude_current_product
-                                                    );
-                                                    if ($filter_product_id) : ?>
-                                                        <a href="<?php echo get_the_permalink($filter_product_id); ?>" title="<?php echo esc_attr(get_the_title($filter_product_id)); ?>" class="variation-item">
-                                                            <?php if (in_array($_linked_by_attribute, $show_images)) : ?>
-                                                                <img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($filter_product_id), 'thumbnail') ?>" alt="<?php echo esc_attr($term->name); ?>" />
-                                                            <?php else : ?>
-                                                                <?php echo esc_html($term->name); ?>
-                                                            <?php endif; ?>
-                                                        </a>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
-                                            </li>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-<?php endif;
+        return $all_primary;
     }
 
-
-
-
-
-
-    // Get linked variations
-    public function get_linked_variations($linked_variation_id = '')
-    {
-
-        // get products
-        $linked_variation_products = get_post_meta($linked_variation_id, 'linked_variation_products', true);
+    // shorting variations - 1
+    public function shorting_variations($linked_variation_id = '') {
 
         // get linked by (attributes) value by vaiation id
         $_linked_by_attributes = get_post_meta($linked_variation_id, '_linked_by_attributes', true);
         $show_images = get_post_meta($linked_variation_id, 'show_images', true);
+        $is_primary = get_post_meta($linked_variation_id, 'is_primary', true);
 
         // process variations
         $attributes = [];
         if ($_linked_by_attributes) {
             foreach ($_linked_by_attributes as $key => $_linked_by_attribute) {
-                $attribute = wc_get_attribute($_linked_by_attribute);
-                array_push($attributes, $attribute->slug);
+                $attribute  = wc_get_attribute($_linked_by_attribute);
+                $primary = in_array($_linked_by_attribute, $is_primary) ? true : false;
                 $attributes[$key] = [
                     'id'            => $attribute->id,
                     'name'          => $attribute->name,
                     'slug'          => $attribute->slug,
                     'show_image'    => in_array($_linked_by_attribute, $show_images) ? true : false,
-                    'products'      => $this->get_products_by_variations($attribute->slug, $linked_variation_products),
+                    'is_primary'    => $primary,
                 ];
             }
         }
@@ -556,8 +366,56 @@ class WooLinkedVariation
         return $attributes;
     }
 
-    // Get products by variations
-    public function get_products_by_variations($taxonomy = '', $linked_variation_products = [])
+    // Get linked variations - 2
+    public function get_linked_variations()
+    {
+
+        // get linked variation
+        $linked_variation_id = get_post_meta(get_the_ID(), 'linked_variation_id', true);
+        if (!$linked_variation_id || 'publish' !== get_post_status($linked_variation_id)) {
+            return false;
+        }
+
+        // get products
+        $linked_variation_products = get_post_meta($linked_variation_id, 'linked_variation_products', true);
+
+        // get variations
+        $attributes = $this->shorting_variations($linked_variation_id);
+
+        $primary_attributes = $this->filter_by_primary_attributes($attributes);
+
+        // process variations
+        if ($attributes) {
+            foreach ($attributes as $key => $attribute) {
+                $attributes[$key]['products'] = $this->get_products_by_variations($attribute['is_primary'], $primary_attributes, $attribute['slug'], $linked_variation_products);
+            }
+        }
+
+        return  $attributes;
+    }
+
+    // Filter by primary attributes - 3
+    public function filter_by_primary_attributes($attributes) {
+
+        $tax_query = [];
+        $tax_query_count = 0;
+        $primary_variations = $this->get_primary_variations(true, $attributes);
+        if($primary_variations){
+            foreach($primary_variations as $primary_variation){
+                $current_variation_name = $this->get_variation_data(get_the_ID(), $attributes[$primary_variation]['slug'], 'slug');
+                $tax_query[$tax_query_count]['taxonomy']    = $attributes[$primary_variation]['slug'];
+                $tax_query[$tax_query_count]['field']       = 'slug';
+                $tax_query[$tax_query_count]['terms']       = [$current_variation_name];
+                $tax_query[$tax_query_count]['operator']    = 'IN';
+                $tax_query_count++;
+            }
+        }
+        
+        return $tax_query;
+    }
+
+    // Get products by variations - 4
+    public function get_products_by_variations($is_primary, $primary_attributes = [], $taxonomy = '', $linked_variation_products = [])
     {
 
         $args = [
@@ -565,15 +423,30 @@ class WooLinkedVariation
             'post_status'    => 'publish',
             'posts_per_page' => -1,
             'post__in'       => $linked_variation_products,
-            'tax_query'      => [
+        ];
+
+        if ($is_primary === false && $primary_attributes) {
+            $args['tax_query'] = [
+                'relation' => 'AND',
+                $primary_attributes,
                 [
                     'taxonomy'  => $taxonomy,
                     'field'     => 'slug',
                     'terms'     =>  [],
                     'operator'  => 'EXISTS',
                 ]
-            ]
-        ];
+            ];
+        } else {
+            $args['tax_query'] = [
+                'relation' => 'AND',
+                [
+                    'taxonomy'  => $taxonomy,
+                    'field'     => 'slug',
+                    'terms'     =>  [],
+                    'operator'  => 'EXISTS',
+                ]
+            ];
+        }
 
         $getProducts = get_posts($args);
 
@@ -594,15 +467,11 @@ class WooLinkedVariation
         return false;
     }
 
-    public function render_linked_variation_2()
+    // render linked variation
+    public function render_linked_variation_frontend()
     {
-        // get linked variation
-        $linked_variation_id = get_post_meta(get_the_ID(), 'linked_variation_id', true);
-        if (!$linked_variation_id || 'publish' !== get_post_status($linked_variation_id)) {
-            return;
-        }
-
-        $variations = $this->get_linked_variations($linked_variation_id);
+        // get linked variations
+        $variations = $this->get_linked_variations();
 
         echo '<pre>';
         var_dump($variations);
@@ -619,34 +488,8 @@ class WooLinkedVariation
         endif;
     }
 
-    // return post id
-    public static function get_filter_product_id($tax_query, $exclude_current_product = [], $order = 'ASC')
-    {
-        $args =  [
-            'post_type'         => 'product',
-            'posts_per_page'    => -1,
-            'order'             => $order,
-        ];
-
-        if ($tax_query) {
-            $args['tax_query'] = $tax_query;
-        }
-
-        if ($exclude_current_product) {
-            $args['post__in'] = $exclude_current_product;
-        }
-
-        $filter_product = get_posts($args);
-
-        if ($filter_product) {
-            return $filter_product[0]->ID;
-        } else {
-            return false;
-        }
-    }
-
     // Enqueue scripts
-    public static function frontend_enqueue_scripts($hook)
+    public function frontend_enqueue_scripts($hook)
     {
         if (is_product()) {
             wp_enqueue_script('woo-linked-variation-frontend', plugins_url('assets/js/woo-linked-variation-frontend.js', LVFW_FILE), ['jquery']);
@@ -655,7 +498,7 @@ class WooLinkedVariation
     }
 
     // Show a messsage if WooCommerce plugin is deactive
-    public static function admin_notice_warning()
+    public function admin_notice_warning()
     {
         $plugin_data = get_plugin_data(LVFW_FILE);
         printf(
@@ -666,7 +509,7 @@ class WooLinkedVariation
     }
 
     // Applied to the list of links to display on the plugins page (beside the activate/deactivate links).
-    public static function add_plugin_action_links($links)
+    public function add_plugin_action_links($links)
     {
         $links = array_merge(array(
             '<a href="' . esc_url(admin_url('/edit.php?post_type=woolinkedvariation')) . '">' . __('Variations', 'linked-variation-for-woocommerce') . '</a>'
@@ -677,3 +520,33 @@ class WooLinkedVariation
 }
 
 WooLinkedVariation::getInstance();
+
+
+
+// add_action( 'init', 'migrate_old_data', 10, 2);
+function migrate_old_data() {
+
+    // add plugin version to db
+    if(get_option('lvfw_db_version') !== LVFW_VERSION){
+        update_option('lvfw_db_version', LVFW_VERSION);
+    }
+
+    // migrate old data
+    $args = [
+        'post_type'      => 'woolinkedvariation',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+    ];
+
+    $woolinkedvariations = get_posts($args);
+    if($woolinkedvariations) {
+        foreach($woolinkedvariations as $woolinkedvariation) {
+            $is_primary = get_post_meta($woolinkedvariation->ID, 'is_primary', true);
+            if(!$is_primary){
+                $_linked_by_attributes = get_post_meta($woolinkedvariation->ID, '_linked_by_attributes', true);
+                update_post_meta($woolinkedvariation->ID, 'is_primary', [$_linked_by_attributes[0]]);
+            }
+        }
+    }
+
+}

@@ -5,14 +5,14 @@
 
     <?php foreach ($variations as $variation) :
         $current_product_id = get_the_ID();
-        $current_variation_name = $this->get_variation_data(get_the_ID(), $variation['slug']); ?>
-        <div class="woo-linked-variation">
-            <div class="linked-variation-label">
-                <strong class="variation-label"><?php echo sprintf('%1$s:', $variation['name']); ?></strong>
-                <span class="variation-selection" data-variant="<?php echo esc_attr($current_variation_name); ?>"><?php echo esc_html($current_variation_name); ?></span>
-            </div>
+        $current_variation_name = $this->get_variation_data(get_the_ID(), $variation['slug']);
+        if ($variation['products']) : ?>
+            <div class="woo-linked-variation">
+                <div class="linked-variation-label">
+                    <strong class="variation-label"><?php echo sprintf('%1$s:', $variation['name']); ?></strong>
+                    <span class="variation-selection" data-variant="<?php echo esc_attr($current_variation_name); ?>"><?php echo esc_html($current_variation_name); ?></span>
+                </div>
 
-            <?php if ($variation['products']) : ?>
                 <div class="linked-variations">
                     <ul class="linked-variations-buttons">
                         <?php foreach ($variation['products'] as $product_id) :
@@ -38,9 +38,10 @@
                         <?php endforeach; ?>
                     </ul>
                 </div>
-            <?php endif; ?>
 
-        </div>
-    <?php endforeach; ?>
+            </div>
+        <?php endif;
+
+    endforeach; ?>
 
 </div>

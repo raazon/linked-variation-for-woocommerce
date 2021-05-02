@@ -327,18 +327,10 @@ class WooLinkedVariation
         die();
     }
 
-    // Get all primary variations
-    public function get_primary_variations($id, $array) {
 
-        $all_primary = [];
-        foreach ($array as $key => $val) {
-            if ($val['is_primary'] === $id) {
-                $all_primary[$key] = $key;
-            }
-        }
-        return $all_primary;
-    }
 
+
+    
     // Get variation name
     public function get_variation_data($product_id = '', $taxonomy = '', $field = 'name')
     {
@@ -351,41 +343,6 @@ class WooLinkedVariation
         }
 
         return false;
-    }
-
-    // get primary products
-    public function get_primary_products($taxonomy = '', $linked_variation_products = []) {
-        
-        $terms = wc_get_product_terms(get_the_ID(), $taxonomy);
-        $args = [
-            'post_type'      => 'product',
-            'post_status'    => 'publish',
-            'posts_per_page' => -1,
-        ];
-
-        if ($terms) {
-            $termsArray = (array) $terms[0];
-            $args['post__in']  = $linked_variation_products;
-            $args['tax_query'] = [
-                'relation' => 'AND',
-                [
-                    'taxonomy'  => $taxonomy,
-                    'field'     => 'slug',
-                    'terms'     =>  [$termsArray['slug']],
-                    'operator'  => 'NOT IN',
-                ]
-            ];
-        }
-
-        $getProducts = get_posts($args);
-        $product_ids = [];
-        if($getProducts){
-            $product_ids = wp_list_pluck($getProducts, 'ID');
-        }
-        
-        array_unshift($product_ids, get_the_ID());
-
-        return $product_ids;
     }
 
     // shorting variations - 1
@@ -415,71 +372,62 @@ class WooLinkedVariation
         return $attributes;
     }
 
-    // Filter by primary attributes - 2
-    public function filter_by_primary_attributes($attributes) {
+    // Filter by normal tax query - 2
+    public function build_tax_query($attributes = []) {
 
         $tax_query = [];
         $tax_query_count = 0;
-        $primary_variations = $this->get_primary_variations(true, $attributes);
-        if($primary_variations){
-            foreach($primary_variations as $primary_variation){
-                $current_variation_name = $this->get_variation_data(get_the_ID(), $attributes[$primary_variation]['slug'], 'slug');
-                $tax_query[$tax_query_count]['taxonomy']    = $attributes[$primary_variation]['slug'];
+        foreach($attributes as $attribute){
+            if($attribute['is_primary']){
+                $tax_query[$tax_query_count]['taxonomy']    = $attribute['slug'];
+                $tax_query[$tax_query_count]['field']       = 'slug';
+                $tax_query[$tax_query_count]['terms']       = [];
+                $tax_query[$tax_query_count]['operator']    = 'EXISTS';
+                $tax_query_count++;
+            }else {
+                $current_variation_name = $this->get_variation_data(get_the_ID(), $attribute['slug'], 'slug');
+                $tax_query[$tax_query_count]['taxonomy']    = $attribute['slug'];
                 $tax_query[$tax_query_count]['field']       = 'slug';
                 $tax_query[$tax_query_count]['terms']       = [$current_variation_name];
                 $tax_query[$tax_query_count]['operator']    = 'IN';
                 $tax_query_count++;
             }
+            $tax_query_count++;
         }
         
         return $tax_query;
     }
 
     // Get products by variations - 3
-    public function get_products_by_variations($is_primary, $primary_attributes = [], $taxonomy = '', $linked_variation_products = [])
+    public function get_products_by_variations($attributes = [], $attribute = [], $linked_variation_products = [])
     {
-
+        
+        $tax_query = [];
+        $tax_query_count = 0;
+        if($attribute['is_primary']){
+            $tax_query = $this->build_tax_query($attributes);
+        }else {
+            foreach($attributes as $attribute){
+                $current_variation_name = $this->get_variation_data(get_the_ID(), $attribute['slug'], 'slug');
+                $tax_query[$tax_query_count]['taxonomy']    = $attribute['slug'];
+                $tax_query[$tax_query_count]['field']       = 'slug';
+                $tax_query[$tax_query_count]['terms']       = $attribute['is_primary'] ? [$current_variation_name] : [];
+                $tax_query[$tax_query_count]['operator']    = $attribute['is_primary'] ? 'IN' : 'EXISTS';
+                $tax_query_count++;
+            }
+        }
+        
         $args = [
-            'post_type'      => 'product',
-            'post_status'    => 'publish',
-            'posts_per_page' => -1,
+            'post_type'         => 'product',
+            'post_status'       => 'publish',
+            'posts_per_page'    => -1,
+            $args['post__in']   = $linked_variation_products
         ];
 
-        if ($is_primary === false && $primary_attributes) {
-            $args['post__in']  = $linked_variation_products;
+        if($tax_query) {
             $args['tax_query'] = [
                 'relation' => 'AND',
-                $primary_attributes,
-                [
-                    'taxonomy'  => $taxonomy,
-                    'field'     => 'slug',
-                    'terms'     =>  [],
-                    'operator'  => 'EXISTS',
-                ]
-            ];
-        } elseif($is_primary === true) {
-            $get_primary_products = $this->get_primary_products($taxonomy, $linked_variation_products);
-            $args['post__in']  = $get_primary_products ? $get_primary_products : $linked_variation_products;
-            $args['tax_query'] = [
-                'relation' => 'AND',
-                [
-                    'taxonomy'  => $taxonomy,
-                    'field'     => 'slug',
-                    'terms'     =>  [],
-                    'operator'  => 'EXISTS',
-                ]
-            ];
-            $args['order']     = 'ASC';
-        } else {
-            $args['post__in']  = $linked_variation_products;
-            $args['tax_query'] = [
-                'relation' => 'AND',
-                [
-                    'taxonomy'  => $taxonomy,
-                    'field'     => 'slug',
-                    'terms'     =>  [],
-                    'operator'  => 'EXISTS',
-                ]
+                $tax_query,
             ];
         }
 
@@ -504,12 +452,10 @@ class WooLinkedVariation
         // get variations
         $attributes = $this->shorting_variations($linked_variation_id);
 
-        $primary_attributes = $this->filter_by_primary_attributes($attributes);
-
         // process variations
         if ($attributes) {
             foreach ($attributes as $key => $attribute) {
-                $attributes[$key]['products'] = $this->get_products_by_variations($attribute['is_primary'], $primary_attributes, $attribute['slug'], $linked_variation_products);
+                $attributes[$key]['products'] = $this->get_products_by_variations($attributes, $attribute, $linked_variation_products);
             }
         }
 
@@ -521,7 +467,7 @@ class WooLinkedVariation
     {
         // get linked variations
         $variations = $this->get_linked_variations();
-        
+
         echo '<pre>';
         var_dump($variations);
         echo '</pre>';

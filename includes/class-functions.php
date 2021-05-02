@@ -329,7 +329,8 @@ class WooLinkedVariation
 
 
 
-
+    // shorting vaiations
+    
     
     // Get variation name
     public function get_variation_data($product_id = '', $taxonomy = '', $field = 'name')

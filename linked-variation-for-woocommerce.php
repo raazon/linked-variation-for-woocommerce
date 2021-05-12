@@ -3,14 +3,13 @@
 /**
  *
  * @link              https://devsace.com/
- * @since             1.0.0
  * @package           WooLinkedVariation
  *
  * @wordpress-plugin
  * Plugin Name:       Linked Variation for WooCommerce
  * Plugin URI:        https://demos.devsace.com/plugins/linked-variation-for-woocommerce/
  * Description:       This is a helper plugin of WooCommerce built to link separate products together by attributes.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            DevsAce
  * Author URI:        https://devsace.com/
  * License:           GPL-2.0+
@@ -19,7 +18,7 @@
  * Domain Path:       /languages
  * 
  * WC requires at least: 3.8
- * WC tested up to: 4.6
+ * WC tested up to: 5.3.0
  */
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
@@ -37,7 +36,7 @@ function woo_linked_variation_load_textdomain()
 }
 
 // Declering Constant
-define('LVFW_VERSION', '1.0.0'); // Currently plugin version.
+define('LVFW_VERSION', '1.0.1'); // Currently plugin version.
 define('LVFW_API_URL', 'https://api.devsace.com/linked-variation-for-woocommerce'); // Currently plugin version.
 define('LVFW_FILE', __FILE__);
 define('LVFW_BASENAME', plugin_basename(__FILE__));

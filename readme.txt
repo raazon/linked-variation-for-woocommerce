@@ -3,9 +3,9 @@ Contributors: devsace, raazon
 Donate link: https://demos.devsace.com/plugins/linked-variation-for-woocommerce/contact/?source=donate-link
 Tags: variation, woocommerce, products, devsace, e-commerce, shop, woocommerce variation, linked variation, woocommerce attributes
 Requires at least: 4.5
-Tested up to: 5.5
+Tested up to: 5.7.1
 Requires PHP: 5.2.17
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -45,11 +45,15 @@ No, It's completely free!
 
 == Changelog ==
 
-= 1.0.0 =
-* Initial Release *
+= 1.0.1 =
+Fix single variation not working
+Fix empty variation li
+Fix linked product together without using variations
+Fix product ordering issue
+Added primary/common variation checkbox field
 
 
 == Upgrade Notice ==
 
-= 1.0.0 =
+= 1.0.1 =
 This initial release of this plugin

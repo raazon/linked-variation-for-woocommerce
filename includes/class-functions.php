@@ -102,23 +102,34 @@ class WooLinkedVariation
     {
         $post_types = ['woolinkedvariation'];
         if (in_array($post_type, $post_types)) {
+            // general settings
             add_meta_box(
                 'general-settings',
                 __('General Settings', 'linked-variation-for-woocommerce'),
-                array($this, 'render_meta_box_content'),
+                array($this, 'render_meta_box_content_general_settings'),
                 $post_type,
                 'advanced',
                 'high'
+            );
+
+            // thank you
+            add_meta_box(
+                'thank-you',
+                __('Thank You!', 'linked-variation-for-woocommerce'),
+                array($this, 'render_meta_box_content_thank_you'),
+                $post_type,
+                'side',
+                'default'
             );
         }
     }
 
     /**
-     * Render Meta Box content.
+     * Render General Settings Meta Box content.
      *
      * @param WP_Post $post The post object.
      */
-    public function render_meta_box_content($post)
+    public function render_meta_box_content_general_settings($post)
     {
         // Add an nonce field so we can check for it later.
         wp_nonce_field('woo_linked_variation_products_nonce_action', 'woo_linked_variation_products_nonce');
@@ -142,15 +153,20 @@ class WooLinkedVariation
                 'posts_per_page' => -1,
             ]
         );
-        $products = wp_list_pluck($get_products, 'post_title', 'ID'); ?>
+        $products = wp_list_pluck($get_products, 'ID');
+        if($linked_variation_products){
+            $nonSelected = array_diff($products, $linked_variation_products);
+            $products = array_merge($linked_variation_products, $nonSelected);
+        }
+        ?>
 
         <div class="woocommerce_options_panel">
             <?php if ($products) : ?>
                 <div class="meta-box-item">
                     <label class="widefat" for="_linked_variation_products"><?php esc_attr_e('Select Products', 'linked-variation-for-woocommerce'); ?></label>
                     <select id="_linked_variation_products" class="linked_variation_products" name="linked_variation_products[]" multiple="multiple">
-                        <?php foreach ($products as $key => $product) : ?>
-                            <option value="<?php echo esc_attr($key); ?>" <?php selected(in_array($key, $linked_variation_products)) ?>><?php echo esc_html($product); ?></option>
+                        <?php foreach ($products as $product) : ?>
+                            <option value="<?php echo esc_attr($product); ?>" <?php selected(in_array($product, $linked_variation_products)) ?>><?php echo get_the_title($product); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -189,6 +205,28 @@ class WooLinkedVariation
 
 
         <?php
+    }
+
+    /**
+     * Render Rate Us Meta Box content.
+     *
+     * @param WP_Post $post The post object.
+     */
+    public function render_meta_box_content_thank_you($post)
+    {
+        $response = wp_remote_get(LVFW_API_URL);
+        $body = wp_remote_retrieve_body( $response );
+
+        if ( is_array( $response ) && ! is_wp_error( $response ) && $body ) {
+            echo $body;
+        } else {
+            echo sprintf(
+                '<p> %1$s <a href="https://wordpress.org/support/plugin/linked-variation-for-woocommerce/reviews/?filter=5" target="_blank">%2$s</a></p> <p>%3$s</p>',
+                __('Thank you for using our plugin. If you like our plugin please'),
+                __('Rate Us.'),
+                __('Your rating is our inspiration!')
+            );
+        }
     }
 
     /**
@@ -246,7 +284,7 @@ class WooLinkedVariation
 
         // Update the linked_variation_products meta field.
         if (isset($_POST['linked_variation_products'])) {
-            update_post_meta($post_id, 'linked_variation_products', array_filter($_POST['linked_variation_products'], 'intval'));
+            update_post_meta($post_id, 'linked_variation_products', array_map('intval', $_POST['linked_variation_products']));
             foreach ($_POST['linked_variation_products'] as $linked_variation_product) {
                 if (intval($linked_variation_product) && intval($post_id)) {
                     update_post_meta(intval($linked_variation_product), 'linked_variation_id', intval($post_id));
@@ -326,11 +364,6 @@ class WooLinkedVariation
 
         die();
     }
-
-
-
-    // shorting vaiations
-    
     
     // Get variation name
     public function get_variation_data($product_id = '', $taxonomy = '', $field = 'name')
@@ -422,7 +455,8 @@ class WooLinkedVariation
             'post_type'         => 'product',
             'post_status'       => 'publish',
             'posts_per_page'    => -1,
-            $args['post__in']   = $linked_variation_products
+            'orderby'           => 'post__in',
+            'post__in'          => $linked_variation_products
         ];
 
         if($tax_query) {
@@ -463,22 +497,45 @@ class WooLinkedVariation
         return  $attributes;
     }
 
+    // Get linked products - 5
+    public function get_linked_products()
+    {
+
+        // get linked variation
+        $linked_variation_id = get_post_meta(get_the_ID(), 'linked_variation_id', true);
+        if (!$linked_variation_id || 'publish' !== get_post_status($linked_variation_id)) {
+            return false;
+        }
+
+        // get products
+        $linked_variation_products = get_post_meta($linked_variation_id, 'linked_variation_products', true);
+
+        return  $linked_variation_products;
+    }
+
     // render linked variation
     public function render_linked_variation_frontend()
     {
         // get linked variations
         $variations = $this->get_linked_variations();
 
-        echo '<pre>';
-        var_dump($variations);
-        echo '</pre>';
+        // get linked products
+        $products = $this->get_linked_products();
 
         if ($variations) :
 
-            if (file_exists(LVFW_INCLUDE_PATH . 'layouts/layout-1.php')) {
-                include_once LVFW_INCLUDE_PATH . 'layouts/layout-1.php';
+            if (file_exists(LVFW_INCLUDE_PATH . 'templates/variations.php')) {
+                include_once LVFW_INCLUDE_PATH . 'templates/variations.php';
             } else {
-                esc_html_e('Layout file not found.', 'linked-variation-for-woocommerce');
+                esc_html_e('Variations template file not found.', 'linked-variation-for-woocommerce');
+            }
+
+        elseif ($products) :
+
+            if (file_exists(LVFW_INCLUDE_PATH . 'templates/products.php')) {
+                include_once LVFW_INCLUDE_PATH . 'templates/products.php';
+            } else {
+                esc_html_e('Products template file not found.', 'linked-variation-for-woocommerce');
             }
 
         endif;
@@ -516,33 +573,3 @@ class WooLinkedVariation
 }
 
 WooLinkedVariation::getInstance();
-
-
-
-// add_action( 'init', 'migrate_old_data', 10, 2);
-function migrate_old_data() {
-
-    // add plugin version to db
-    if(get_option('lvfw_db_version') !== LVFW_VERSION){
-        update_option('lvfw_db_version', LVFW_VERSION);
-    }
-
-    // migrate old data
-    $args = [
-        'post_type'      => 'woolinkedvariation',
-        'post_status'    => 'publish',
-        'posts_per_page' => -1,
-    ];
-
-    $woolinkedvariations = get_posts($args);
-    if($woolinkedvariations) {
-        foreach($woolinkedvariations as $woolinkedvariation) {
-            $is_primary = get_post_meta($woolinkedvariation->ID, 'is_primary', true);
-            if(!$is_primary){
-                $_linked_by_attributes = get_post_meta($woolinkedvariation->ID, '_linked_by_attributes', true);
-                update_post_meta($woolinkedvariation->ID, 'is_primary', [$_linked_by_attributes[0]]);
-            }
-        }
-    }
-
-}

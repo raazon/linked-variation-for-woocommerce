@@ -38,6 +38,7 @@ function woo_linked_variation_load_textdomain()
 
 // Declering Constant
 define('LVFW_VERSION', '1.0.0'); // Currently plugin version.
+define('LVFW_API_URL', 'https://api.devsace.com/linked-variation-for-woocommerce'); // Currently plugin version.
 define('LVFW_FILE', __FILE__);
 define('LVFW_BASENAME', plugin_basename(__FILE__));
 define('LVFW_PATH', plugin_dir_path(__FILE__));

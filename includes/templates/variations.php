@@ -8,6 +8,7 @@
         $current_variation_name = $this->get_variation_data(get_the_ID(), $variation['slug']);
         if ($variation['products']) : ?>
             <div class="woo-linked-variation">
+            
                 <div class="linked-variation-label">
                     <strong class="variation-label"><?php echo sprintf('%1$s:', $variation['name']); ?></strong>
                     <span class="variation-selection" data-variant="<?php echo esc_attr($current_variation_name); ?>"><?php echo esc_html($current_variation_name); ?></span>

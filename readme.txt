@@ -52,8 +52,5 @@ Fix linked product together without using variations
 Fix product ordering issue
 Added primary/common variation checkbox field
 
-
-== Upgrade Notice ==
-
-= 1.0.1 =
+= 1.0.0 =
 This initial release of this plugin

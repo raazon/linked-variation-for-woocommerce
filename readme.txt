@@ -5,7 +5,7 @@ Tags: variation, woocommerce, products, devsace, e-commerce, shop, woocommerce v
 Requires at least: 4.5
 Tested up to: 5.7.1
 Requires PHP: 5.2.17
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -44,6 +44,10 @@ Alternatively, you can download the plugin using the download button on this pag
 No, It's completely free!
 
 == Changelog ==
+
+= 1.0.2 =
+Fix single variation not working
+- Fix file missing bug
 
 = 1.0.1 =
 Fix single variation not working

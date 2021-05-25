@@ -16,6 +16,8 @@ Linked products by selected woocommerce attributes, a simple way to handle compl
 
 If you wish to take a look at this plugin how it works then [see demo](https://demos.devsace.com/plugins/linked-variation-for-woocommerce/product/iphone-12-black-64gb).
 
+Inspired by [Linked Variations by Iconic](https://iconicwp.com/products/woocommerce-linked-variations/?ref=razon)
+
 = Core Features =
 * Create swap links between separate products in your store.
 * Link different versions of a product together without using variations.
@@ -42,6 +44,7 @@ Alternatively, you can download the plugin using the download button on this pag
 = Does this plugin have a Pro version? =
 
 No, It's completely free!
+However, we can recommend [Linked Variations Premium by Iconic](https://iconicwp.com/products/woocommerce-linked-variations/?ref=razon).
 
 == Changelog ==
 

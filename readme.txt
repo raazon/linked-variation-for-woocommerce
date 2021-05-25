@@ -3,9 +3,9 @@ Contributors: devsace, raazon
 Donate link: https://demos.devsace.com/plugins/linked-variation-for-woocommerce/contact/?source=donate-link
 Tags: variation, woocommerce, products, devsace, e-commerce, shop, woocommerce variation, linked variation, woocommerce attributes
 Requires at least: 4.5
-Tested up to: 5.7.1
+Tested up to: 5.7.2
 Requires PHP: 5.2.17
-Stable tag: 1.0.2
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -44,6 +44,14 @@ Alternatively, you can download the plugin using the download button on this pag
 No, It's completely free!
 
 == Changelog ==
+
+= 1.0.4 =
+- Fix upgrade issue
+
+= 1.0.3 =
+Variation Template Not Found
+- Fix template missing issue
+- Fix upgrade issue
 
 = 1.0.2 =
 Fix single variation not working

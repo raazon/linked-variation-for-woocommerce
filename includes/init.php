@@ -30,6 +30,9 @@ final class Init
 
 		// Admin notice if Woocommerce is not installed.
 		add_action('admin_notices', [__CLASS__, 'admin_notice']);
+
+		// Include required files.
+		$this->includes();
 	}
 
 	public static function activate() {}
@@ -111,6 +114,12 @@ final class Init
 				$notice_html
 			);
 		}
+	}
+
+	private function includes()
+	{
+		// Include required files.
+		require_once LVFW_INCLUDE_PATH . 'admin/loader.php';
 	}
 }
 

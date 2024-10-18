@@ -32,12 +32,13 @@ function lvfw_create_woolinkedvariation_cpt()
 		'items_list_navigation' => esc_html__('Woo Linked Variations list navigation', 'linked-variation-for-woocommerce'),
 		'filter_items_list' => esc_html__('Filter Woo Linked Variations list', 'linked-variation-for-woocommerce'),
 	);
+
 	$args = array(
 		'label' => esc_html__('Woo Linked Variation', 'linked-variation-for-woocommerce'),
 		'description' => esc_html__('WooCommerce Linked Variations', 'linked-variation-for-woocommerce'),
 		'labels' => $labels,
 		'menu_icon' => 'dashicons-admin-links',
-		'supports' => array('title'),
+		'supports' => array('title', 'revisions'),
 		'taxonomies' => array(),
 		'public' => false,
 		'show_ui' => true,
@@ -50,9 +51,10 @@ function lvfw_create_woolinkedvariation_cpt()
 		'hierarchical' => false,
 		'exclude_from_search' => true,
 		'show_in_rest' => true,
-		'publicly_queryable' => true,
+		'publicly_queryable' => false,
 		'capability_type' => 'post',
 	);
+
 	register_post_type('woolinkedvariation', $args);
 }
 add_action('init', 'lvfw_create_woolinkedvariation_cpt', 10, 1);

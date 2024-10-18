@@ -23,7 +23,6 @@ class WooLinkedVariation
     public function __construct()
     {
         if (is_admin() && is_plugin_active('woocommerce/woocommerce.php')) {
-            add_action('init', array($this, 'create_woolinkedvariation_cpt'), 10, 1);
             add_action('add_meta_boxes', array($this, 'add_meta_box'), 10, 1);
             add_action('save_post', array($this, 'save'), 10, 1);
 
@@ -34,67 +33,7 @@ class WooLinkedVariation
         add_action('woocommerce_before_add_to_cart_form', array($this, 'render_linked_variation_frontend'), 10, 0);
         add_action('wp_enqueue_scripts', array($this, 'frontend_enqueue_scripts'), 10, 1);
 
-        if (is_admin() && !is_plugin_active('woocommerce/woocommerce.php')) {
-            add_action('admin_notices', array($this, 'admin_notice_warning'));
-        }
-
         add_filter('plugin_action_links_' . LVFW_BASENAME, array($this, 'add_plugin_action_links'));
-    }
-
-    // Register Custom Post Type Woo Linked Variation
-    public function create_woolinkedvariation_cpt()
-    {
-        $labels = array(
-            'name' => _x('Woo Linked Variations', 'Post Type General Name', 'linked-variation-for-woocommerce'),
-            'singular_name' => _x('Woo Linked Variation', 'Post Type Singular Name', 'linked-variation-for-woocommerce'),
-            'menu_name' => _x('Woo Linked Variations', 'Admin Menu text', 'linked-variation-for-woocommerce'),
-            'name_admin_bar' => _x('Woo Linked Variation', 'Add New on Toolbar', 'linked-variation-for-woocommerce'),
-            'archives' => __('Woo Linked Variation Archives', 'linked-variation-for-woocommerce'),
-            'attributes' => __('Woo Linked Variation Attributes', 'linked-variation-for-woocommerce'),
-            'parent_item_colon' => __('Parent Woo Linked Variation:', 'linked-variation-for-woocommerce'),
-            'all_items' => __('Woo Linked Variations', 'linked-variation-for-woocommerce'),
-            'add_new_item' => __('Add New Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'add_new' => __('Add New Linked Variation', 'linked-variation-for-woocommerce'),
-            'new_item' => __('New Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'edit_item' => __('Edit Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'update_item' => __('Update Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'view_item' => __('View Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'view_items' => __('View Woo Linked Variations', 'linked-variation-for-woocommerce'),
-            'search_items' => __('Search Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'not_found' => __('No linked variations found', 'linked-variation-for-woocommerce'),
-            'not_found_in_trash' => __('Not found in Trash', 'linked-variation-for-woocommerce'),
-            'featured_image' => __('Featured Image', 'linked-variation-for-woocommerce'),
-            'set_featured_image' => __('Set featured image', 'linked-variation-for-woocommerce'),
-            'remove_featured_image' => __('Remove featured image', 'linked-variation-for-woocommerce'),
-            'use_featured_image' => __('Use as featured image', 'linked-variation-for-woocommerce'),
-            'insert_into_item' => __('Insert into Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'uploaded_to_this_item' => __('Uploaded to this Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'items_list' => __('Woo Linked Variations list', 'linked-variation-for-woocommerce'),
-            'items_list_navigation' => __('Woo Linked Variations list navigation', 'linked-variation-for-woocommerce'),
-            'filter_items_list' => __('Filter Woo Linked Variations list', 'linked-variation-for-woocommerce'),
-        );
-        $args = array(
-            'label' => __('Woo Linked Variation', 'linked-variation-for-woocommerce'),
-            'description' => __('WooCommerce Linked Variations', 'linked-variation-for-woocommerce'),
-            'labels' => $labels,
-            'menu_icon' => 'dashicons-admin-links',
-            'supports' => array('title'),
-            'taxonomies' => array(),
-            'public' => false,
-            'show_ui' => true,
-            'show_in_menu' => 'edit.php?post_type=product',
-            'menu_position' => 5,
-            'show_in_admin_bar' => false,
-            'show_in_nav_menus' => false,
-            'can_export' => true,
-            'has_archive' => false,
-            'hierarchical' => false,
-            'exclude_from_search' => true,
-            'show_in_rest' => true,
-            'publicly_queryable' => true,
-            'capability_type' => 'post',
-        );
-        register_post_type('woolinkedvariation', $args);
     }
 
     // Adds the meta box container.
@@ -548,17 +487,6 @@ class WooLinkedVariation
             wp_enqueue_script('woo-linked-variation-frontend', plugins_url('assets/js/woo-linked-variation-frontend.js', LVFW_FILE), ['jquery']);
             wp_enqueue_style('woo-linked-variation-frontend', plugins_url('assets/css/woo-linked-variation-frontend.css', LVFW_FILE), []);
         }
-    }
-
-    // Show a messsage if WooCommerce plugin is deactive
-    public function admin_notice_warning()
-    {
-        $plugin_data = get_plugin_data(LVFW_FILE);
-        printf(
-            '<div class="notice notice-warning is-dismissible"><p>%1$s %2$s</p></div>',
-            $plugin_data['Name'],
-            __('not operational, This plugin only work when <a href="https://wordpress.org/plugins/woocommerce/" target="_blank">WooCommerce plugin</a> is active.', 'linked-variation-for-woocommerce')
-        );
     }
 
     // Applied to the list of links to display on the plugins page (beside the activate/deactivate links).

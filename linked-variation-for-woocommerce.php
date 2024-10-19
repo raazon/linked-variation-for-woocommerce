@@ -28,7 +28,6 @@ define('LVFW_BASENAME', plugin_basename(__FILE__));
 define('LVFW_PATH', trailingslashit(plugin_dir_path(__FILE__)));
 define('LVFW_URL', trailingslashit(plugin_dir_url(__FILE__)));
 define('LVFW_INCLUDE_PATH', LVFW_PATH . 'includes/');
-define('LVFW_API_URL', 'https://api.devsace.com/linked-variation-for-woocommerce');
 
 // Loading init file
 require_once LVFW_PATH . '/includes/init.php';

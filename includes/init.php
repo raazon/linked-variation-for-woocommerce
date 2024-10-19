@@ -31,6 +31,9 @@ final class Init
 		// Admin notice if Woocommerce is not installed.
 		add_action('admin_notices', [__CLASS__, 'admin_notice']);
 
+		// Add plugin action links.
+		add_filter('plugin_action_links_' . LVFW_BASENAME, array($this, 'add_plugin_action_links'));
+
 		// Include required files.
 		$this->includes();
 	}
@@ -114,6 +117,15 @@ final class Init
 				$notice_html
 			);
 		}
+	}
+
+	public function add_plugin_action_links($links)
+	{
+		$links = array_merge(array(
+			'<a href="' . esc_url(admin_url('/edit.php?post_type=woolinkedvariation')) . '">' . __('Variations', 'linked-variation-for-woocommerce') . '</a>'
+		), $links);
+
+		return $links;
 	}
 
 	private function includes()

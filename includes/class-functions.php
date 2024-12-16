@@ -1,245 +1,234 @@
-<?php defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly.
+<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
 /**
  * The WooLinkedVariation main Class.
  */
-class WooLinkedVariation
-{
+class WooLinkedVariation {
 
-    // Hold the class instance.
-    private static $instance = null;
 
-    // The object is created from within the class itself
-    // only if the class has no instance.
-    public static function getInstance()
-    {
-        if (self::$instance == null) {
-            self::$instance = new WooLinkedVariation();
-        }
+	// Hold the class instance.
+	private static $instance = null;
 
-        return self::$instance;
-    }
+	// The object is created from within the class itself
+	// only if the class has no instance.
+	public static function getInstance() {
+		if ( self::$instance == null ) {
+			self::$instance = new WooLinkedVariation();
+		}
 
-    // to prevent initiation with outer code.
-    public function __construct()
-    {
-        if (is_admin() && is_plugin_active('woocommerce/woocommerce.php')) {
-            add_action('wp_ajax_linked_by_attributes_ordering', array($this, 'linked_by_attributes_ordering'));
-        }
+		return self::$instance;
+	}
 
-        add_action('woocommerce_before_add_to_cart_form', array($this, 'render_linked_variation_frontend'), 10, 0);
-        add_action('wp_enqueue_scripts', array($this, 'frontend_enqueue_scripts'), 10, 1);
-    }
+	// to prevent initiation with outer code.
+	public function __construct() {
+		if ( is_admin() && is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+			add_action( 'wp_ajax_linked_by_attributes_ordering', array( $this, 'linked_by_attributes_ordering' ) );
+		}
+
+		add_action( 'woocommerce_before_add_to_cart_form', array( $this, 'render_linked_variation_frontend' ), 10, 0 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueue_scripts' ), 10, 1 );
+	}
 
 
 
-    // update linked_by_attributes_ordering ajax function
-    public function linked_by_attributes_ordering()
-    {
-        $ordering = isset($_POST['ordering']) ? $_POST['ordering'] : '';
-        $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : '';
+	// update linked_by_attributes_ordering ajax function
+	public function linked_by_attributes_ordering() {
+		$ordering = isset( $_POST['ordering'] ) ? $_POST['ordering'] : '';
+		$post_id  = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : '';
 
-        // Check the user's permissions.
-        if ('page' == get_post_type($post_id)) {
-            if (!current_user_can('edit_page', $post_id)) {
-                return $post_id;
-            }
-        } else {
-            if (!current_user_can('edit_post', $post_id)) {
-                return $post_id;
-            }
-        }
+		// Check the user's permissions.
+		if ( 'page' == get_post_type( $post_id ) ) {
+			if ( ! current_user_can( 'edit_page', $post_id ) ) {
+				return $post_id;
+			}
+		} elseif ( ! current_user_can( 'edit_post', $post_id ) ) {
+				return $post_id;
+		}
 
-        if (isset($ordering)) {
-            update_post_meta($post_id, '_linked_by_attributes_ordering', array_filter($_POST['ordering'], 'intval'));
-        }
+		if ( isset( $ordering ) ) {
+			update_post_meta( $post_id, '_linked_by_attributes_ordering', array_filter( $_POST['ordering'], 'intval' ) );
+		}
 
-        die();
-    }
-    
-    // Get variation name
-    public function get_variation_data($product_id = '', $taxonomy = '', $field = 'name')
-    {
+		die();
+	}
 
-        $terms = wc_get_product_terms($product_id, $taxonomy);
+	// Get variation name
+	public function get_variation_data( $product_id = '', $taxonomy = '', $field = 'name' ) {
 
-        if ($terms) {
-            $termsArray = (array) $terms[0];
-            return $termsArray[$field];
-        }
+		$terms = wc_get_product_terms( $product_id, $taxonomy );
 
-        return false;
-    }
+		if ( $terms ) {
+			$termsArray = (array) $terms[0];
+			return $termsArray[ $field ];
+		}
 
-    // shorting variations - 1
-    public function shorting_variations($linked_variation_id = '') {
+		return false;
+	}
 
-        // get linked by (attributes) value by vaiation id
-        $_linked_by_attributes = get_post_meta($linked_variation_id, '_linked_by_attributes', true);
-        $show_images = get_post_meta($linked_variation_id, 'show_images', true);
-        $is_primary = get_post_meta($linked_variation_id, 'is_primary', true);
+	// shorting variations - 1
+	public function shorting_variations( $linked_variation_id = '' ) {
 
-        // process variations
-        $attributes = [];
-        if ($_linked_by_attributes) {
-            foreach ($_linked_by_attributes as $key => $_linked_by_attribute) {
-                $attribute  = wc_get_attribute($_linked_by_attribute);
-                $primary = in_array($_linked_by_attribute, $is_primary) ? true : false;
-                $attributes[$key] = [
-                    'id'            => $attribute->id,
-                    'name'          => $attribute->name,
-                    'slug'          => $attribute->slug,
-                    'show_image'    => in_array($_linked_by_attribute, $show_images) ? true : false,
-                    'is_primary'    => $primary,
-                ];
-            }
-        }
+		// get linked by (attributes) value by vaiation id
+		$_linked_by_attributes = get_post_meta( $linked_variation_id, '_linked_by_attributes', true );
+		$show_images           = get_post_meta( $linked_variation_id, 'show_images', true );
+		$is_primary            = get_post_meta( $linked_variation_id, 'is_primary', true );
 
-        return $attributes;
-    }
+		// process variations
+		$attributes = array();
+		if ( $_linked_by_attributes ) {
+			foreach ( $_linked_by_attributes as $key => $_linked_by_attribute ) {
+				$attribute          = wc_get_attribute( $_linked_by_attribute );
+				$primary            = in_array( $_linked_by_attribute, $is_primary ) ? true : false;
+				$attributes[ $key ] = array(
+					'id'         => $attribute->id,
+					'name'       => $attribute->name,
+					'slug'       => $attribute->slug,
+					'show_image' => in_array( $_linked_by_attribute, $show_images ) ? true : false,
+					'is_primary' => $primary,
+				);
+			}
+		}
 
-    // Filter by normal tax query - 2
-    public function build_tax_query($attributes = []) {
+		return $attributes;
+	}
 
-        $tax_query = [];
-        $tax_query_count = 0;
-        foreach($attributes as $attribute){
-            if($attribute['is_primary']){
-                $tax_query[$tax_query_count]['taxonomy']    = $attribute['slug'];
-                $tax_query[$tax_query_count]['field']       = 'slug';
-                $tax_query[$tax_query_count]['terms']       = [];
-                $tax_query[$tax_query_count]['operator']    = 'EXISTS';
-                $tax_query_count++;
-            }else {
-                $current_variation_name = $this->get_variation_data(get_the_ID(), $attribute['slug'], 'slug');
-                $tax_query[$tax_query_count]['taxonomy']    = $attribute['slug'];
-                $tax_query[$tax_query_count]['field']       = 'slug';
-                $tax_query[$tax_query_count]['terms']       = [$current_variation_name];
-                $tax_query[$tax_query_count]['operator']    = 'IN';
-                $tax_query_count++;
-            }
-            $tax_query_count++;
-        }
-        
-        return $tax_query;
-    }
+	// Filter by normal tax query - 2
+	public function build_tax_query( $attributes = array() ) {
 
-    // Get products by variations - 3
-    public function get_products_by_variations($attributes = [], $attribute = [], $linked_variation_products = [])
-    {
-        
-        $tax_query = [];
-        $tax_query_count = 0;
-        if($attribute['is_primary']){
-            $tax_query = $this->build_tax_query($attributes);
-        }else {
-            foreach($attributes as $attribute){
-                $current_variation_name = $this->get_variation_data(get_the_ID(), $attribute['slug'], 'slug');
-                $tax_query[$tax_query_count]['taxonomy']    = $attribute['slug'];
-                $tax_query[$tax_query_count]['field']       = 'slug';
-                $tax_query[$tax_query_count]['terms']       = $attribute['is_primary'] ? [$current_variation_name] : [];
-                $tax_query[$tax_query_count]['operator']    = $attribute['is_primary'] ? 'IN' : 'EXISTS';
-                $tax_query_count++;
-            }
-        }
-        
-        $args = [
-            'post_type'         => 'product',
-            'post_status'       => 'publish',
-            'posts_per_page'    => -1,
-            'orderby'           => 'post__in',
-            'post__in'          => $linked_variation_products
-        ];
+		$tax_query       = array();
+		$tax_query_count = 0;
+		foreach ( $attributes as $attribute ) {
+			if ( $attribute['is_primary'] ) {
+				$tax_query[ $tax_query_count ]['taxonomy'] = $attribute['slug'];
+				$tax_query[ $tax_query_count ]['field']    = 'slug';
+				$tax_query[ $tax_query_count ]['terms']    = array();
+				$tax_query[ $tax_query_count ]['operator'] = 'EXISTS';
+				++$tax_query_count;
+			} else {
+				$current_variation_name                    = $this->get_variation_data( get_the_ID(), $attribute['slug'], 'slug' );
+				$tax_query[ $tax_query_count ]['taxonomy'] = $attribute['slug'];
+				$tax_query[ $tax_query_count ]['field']    = 'slug';
+				$tax_query[ $tax_query_count ]['terms']    = array( $current_variation_name );
+				$tax_query[ $tax_query_count ]['operator'] = 'IN';
+				++$tax_query_count;
+			}
+			++$tax_query_count;
+		}
 
-        if($tax_query) {
-            $args['tax_query'] = [
-                'relation' => 'AND',
-                $tax_query,
-            ];
-        }
+		return $tax_query;
+	}
 
-        $getProducts = get_posts($args);
+	// Get products by variations - 3
+	public function get_products_by_variations( $attributes = array(), $attribute = array(), $linked_variation_products = array() ) {
 
-        return $getProducts ? wp_list_pluck($getProducts, 'ID') : [];
-    }
+		$tax_query       = array();
+		$tax_query_count = 0;
+		if ( $attribute['is_primary'] ) {
+			$tax_query = $this->build_tax_query( $attributes );
+		} else {
+			foreach ( $attributes as $attribute ) {
+				$current_variation_name                    = $this->get_variation_data( get_the_ID(), $attribute['slug'], 'slug' );
+				$tax_query[ $tax_query_count ]['taxonomy'] = $attribute['slug'];
+				$tax_query[ $tax_query_count ]['field']    = 'slug';
+				$tax_query[ $tax_query_count ]['terms']    = $attribute['is_primary'] ? array( $current_variation_name ) : array();
+				$tax_query[ $tax_query_count ]['operator'] = $attribute['is_primary'] ? 'IN' : 'EXISTS';
+				++$tax_query_count;
+			}
+		}
 
-    // Get linked variations - 4
-    public function get_linked_variations()
-    {
+		$args = array(
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'orderby'        => 'post__in',
+			'post__in'       => $linked_variation_products,
+		);
 
-        // get linked variation
-        $linked_variation_id = get_post_meta(get_the_ID(), 'linked_variation_id', true);
-        if (!$linked_variation_id || 'publish' !== get_post_status($linked_variation_id)) {
-            return false;
-        }
+		if ( $tax_query ) {
+			$args['tax_query'] = array(
+				'relation' => 'AND',
+				$tax_query,
+			);
+		}
 
-        // get products
-        $linked_variation_products = get_post_meta($linked_variation_id, 'linked_variation_products', true);
+		$getProducts = get_posts( $args );
 
-        // get variations
-        $attributes = $this->shorting_variations($linked_variation_id);
+		return $getProducts ? wp_list_pluck( $getProducts, 'ID' ) : array();
+	}
 
-        // process variations
-        if ($attributes) {
-            foreach ($attributes as $key => $attribute) {
-                $attributes[$key]['products'] = $this->get_products_by_variations($attributes, $attribute, $linked_variation_products);
-            }
-        }
+	// Get linked variations - 4
+	public function get_linked_variations() {
 
-        return  $attributes;
-    }
+		// get linked variation
+		$linked_variation_id = get_post_meta( get_the_ID(), 'linked_variation_id', true );
+		if ( ! $linked_variation_id || 'publish' !== get_post_status( $linked_variation_id ) ) {
+			return false;
+		}
 
-    // Get linked products - 5
-    public function get_linked_products()
-    {
+		// get products
+		$linked_variation_products = get_post_meta( $linked_variation_id, 'linked_variation_products', true );
 
-        // get linked variation
-        $linked_variation_id = get_post_meta(get_the_ID(), 'linked_variation_id', true);
-        if (!$linked_variation_id || 'publish' !== get_post_status($linked_variation_id)) {
-            return false;
-        }
+		// get variations
+		$attributes = $this->shorting_variations( $linked_variation_id );
 
-        // get products
-        $linked_variation_products = get_post_meta($linked_variation_id, 'linked_variation_products', true);
+		// process variations
+		if ( $attributes ) {
+			foreach ( $attributes as $key => $attribute ) {
+				$attributes[ $key ]['products'] = $this->get_products_by_variations( $attributes, $attribute, $linked_variation_products );
+			}
+		}
 
-        return  $linked_variation_products;
-    }
+		return $attributes;
+	}
 
-    // render linked variation
-    public function render_linked_variation_frontend()
-    {
-        // get linked variations
-        $variations = $this->get_linked_variations();
+	// Get linked products - 5
+	public function get_linked_products() {
 
-        // get linked products
-        $products = $this->get_linked_products();
+		// get linked variation
+		$linked_variation_id = get_post_meta( get_the_ID(), 'linked_variation_id', true );
+		if ( ! $linked_variation_id || 'publish' !== get_post_status( $linked_variation_id ) ) {
+			return false;
+		}
 
-        if ($variations) :
+		// get products
+		$linked_variation_products = get_post_meta( $linked_variation_id, 'linked_variation_products', true );
 
-            if (file_exists(LVFW_INCLUDE_PATH . 'templates/variations.php')) {
-                include_once LVFW_INCLUDE_PATH . 'templates/variations.php';
-            } else {
-                esc_html_e('Variations template file not found.', 'linked-variation-for-woocommerce');
-            }
+		return $linked_variation_products;
+	}
 
-        elseif ($products) :
+	// render linked variation
+	public function render_linked_variation_frontend() {
+		// get linked variations
+		$variations = $this->get_linked_variations();
 
-            if (file_exists(LVFW_INCLUDE_PATH . 'templates/products.php')) {
-                include_once LVFW_INCLUDE_PATH . 'templates/products.php';
-            } else {
-                esc_html_e('Products template file not found.', 'linked-variation-for-woocommerce');
-            }
+		// get linked products
+		$products = $this->get_linked_products();
 
-        endif;
-    }
+		if ( $variations ) :
 
-    // Enqueue scripts
-    public function frontend_enqueue_scripts($hook)
-    {
-        if (is_product()) {
-            wp_enqueue_script('woo-linked-variation-frontend', plugins_url('assets/js/woo-linked-variation-frontend.js', LVFW_FILE), ['jquery']);
-            wp_enqueue_style('woo-linked-variation-frontend', plugins_url('assets/css/woo-linked-variation-frontend.css', LVFW_FILE), []);
-        }
-    }
+			if ( file_exists( LVFW_INCLUDE_PATH . 'templates/variations.php' ) ) {
+				include_once LVFW_INCLUDE_PATH . 'templates/variations.php';
+			} else {
+				esc_html_e( 'Variations template file not found.', 'linked-variation-for-woocommerce' );
+			}
+
+		elseif ( $products ) :
+
+			if ( file_exists( LVFW_INCLUDE_PATH . 'templates/products.php' ) ) {
+				include_once LVFW_INCLUDE_PATH . 'templates/products.php';
+			} else {
+				esc_html_e( 'Products template file not found.', 'linked-variation-for-woocommerce' );
+			}
+
+		endif;
+	}
+
+	// Enqueue scripts
+	public function frontend_enqueue_scripts( $hook ) {
+		if ( is_product() ) {
+			wp_enqueue_script( 'woo-linked-variation-frontend', plugins_url( 'assets/js/woo-linked-variation-frontend.js', LVFW_FILE ), array( 'jquery' ) );
+			wp_enqueue_style( 'woo-linked-variation-frontend', plugins_url( 'assets/css/woo-linked-variation-frontend.css', LVFW_FILE ), array() );
+		}
+	}
 }
 
 WooLinkedVariation::getInstance();

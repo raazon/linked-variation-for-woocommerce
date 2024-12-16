@@ -10,23 +10,23 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       linked-variation-for-woocommerce
  * Domain Path:       /languages
- * 
+ *
  * WC requires at least: 3.8
  * WC tested up to: 5.3.0
  */
 
 // Exit if accessed directly.
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 // Define plugin constants.
-define('LVFW_VERSION', '2.0.0');
-define('LVFW_FILE', trailingslashit(__FILE__));
-define('LVFW_BASENAME', plugin_basename(__FILE__));
-define('LVFW_PATH', trailingslashit(plugin_dir_path(__FILE__)));
-define('LVFW_URL', trailingslashit(plugin_dir_url(__FILE__)));
-define('LVFW_INCLUDE_PATH', LVFW_PATH . 'includes/');
+define( 'LVFW_VERSION', '2.0.0' );
+define( 'LVFW_FILE', trailingslashit( __FILE__ ) );
+define( 'LVFW_BASENAME', plugin_basename( __FILE__ ) );
+define( 'LVFW_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
+define( 'LVFW_URL', trailingslashit( plugin_dir_url( __FILE__ ) ) );
+define( 'LVFW_INCLUDE_PATH', LVFW_PATH . 'includes/' );
 
 /**
  * Run the plugin.

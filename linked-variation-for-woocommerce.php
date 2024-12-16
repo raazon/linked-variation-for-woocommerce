@@ -13,6 +13,8 @@
  *
  * WC requires at least: 3.8
  * WC tested up to: 5.3.0
+ *
+ * @package Lvfw
  */
 
 // Exit if accessed directly.

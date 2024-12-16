@@ -1,4 +1,12 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * Main Plugin Class.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
+
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
 final class Init {
 

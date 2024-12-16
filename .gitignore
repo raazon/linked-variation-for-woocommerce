@@ -1,0 +1,32 @@
+# Logs
+logs
+*.log
+
+# Code Editor files
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# composer
+vendor/
+composer.lock
+
+# WPCS/PHPunit
+phpstan.neon
+.phpunit.result.cache
+
+# NPM
+node_modules/
+node_modules
+package-lock.json
+none
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Others
+wordpress/
+build/
+dist/

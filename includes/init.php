@@ -53,7 +53,7 @@ final class Init
 
 	public static function admin_notice()
 	{
-		if (!current_user_can('activate_plugins') || class_exists('WooCommerce')) {
+		if (!current_user_can('activate_plugins') || !class_exists('WooCommerce')) {
 			return;
 		}
 

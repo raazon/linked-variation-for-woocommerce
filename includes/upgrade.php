@@ -1,13 +1,24 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * Upgrade functions.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
 
-add_action( 'plugins_loaded', 'lvfw_migrate_old_data' );
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
+
+/**
+ * Migrate old data.
+ *
+ * @since 2.0.0
+ */
 function lvfw_migrate_old_data() {
-
-	// add plugin version to db
+	// Add plugin version to db.
 	if ( get_option( 'lvfw_db_version' ) !== LVFW_VERSION ) {
 		update_option( 'lvfw_db_version', LVFW_VERSION );
 
-		// migrate old data
+		// Migrate old data.
 		$args = array(
 			'post_type'      => 'woolinkedvariation',
 			'post_status'    => 'publish',
@@ -25,6 +36,5 @@ function lvfw_migrate_old_data() {
 			}
 		}
 	}
-
-	return;
 }
+add_action( 'plugins_loaded', 'lvfw_migrate_old_data' );

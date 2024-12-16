@@ -1,16 +1,25 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
 /**
- * The WooLinkedVariation main Class.
+ * WooLinkedVariation functions.
+ *
+ * @package Lvfw
+ * @since 2.0.0
  */
-class WooLinkedVariation {
 
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
+
+class WooLinkedVariation {
 
 	// Hold the class instance.
 	private static $instance = null;
 
-	// The object is created from within the class itself
-	// only if the class has no instance.
-	public static function getInstance() {
+	/**
+	 * The object is created from within the class itself
+	 * only if the class has no instance.
+	 *
+	 * @return void
+	 */
+	public static function get_instance() {
 		if ( self::$instance == null ) {
 			self::$instance = new WooLinkedVariation();
 		}
@@ -18,7 +27,7 @@ class WooLinkedVariation {
 		return self::$instance;
 	}
 
-	// to prevent initiation with outer code.
+	// To prevent initiation with outer code.
 	public function __construct() {
 		if ( is_admin() && is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 			add_action( 'wp_ajax_linked_by_attributes_ordering', array( $this, 'linked_by_attributes_ordering' ) );
@@ -28,9 +37,7 @@ class WooLinkedVariation {
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_enqueue_scripts' ), 10, 1 );
 	}
 
-
-
-	// update linked_by_attributes_ordering ajax function
+	// Update linked_by_attributes_ordering ajax function.
 	public function linked_by_attributes_ordering() {
 		$ordering = isset( $_POST['ordering'] ) ? $_POST['ordering'] : '';
 		$post_id  = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : '';
@@ -51,7 +58,7 @@ class WooLinkedVariation {
 		die();
 	}
 
-	// Get variation name
+	// Get variation name.
 	public function get_variation_data( $product_id = '', $taxonomy = '', $field = 'name' ) {
 
 		$terms = wc_get_product_terms( $product_id, $taxonomy );
@@ -64,7 +71,7 @@ class WooLinkedVariation {
 		return false;
 	}
 
-	// shorting variations - 1
+	// Shorting variations - 1
 	public function shorting_variations( $linked_variation_id = '' ) {
 
 		// get linked by (attributes) value by vaiation id
@@ -91,7 +98,7 @@ class WooLinkedVariation {
 		return $attributes;
 	}
 
-	// Filter by normal tax query - 2
+	// Filter by normal tax query - 2.
 	public function build_tax_query( $attributes = array() ) {
 
 		$tax_query       = array();
@@ -117,7 +124,7 @@ class WooLinkedVariation {
 		return $tax_query;
 	}
 
-	// Get products by variations - 3
+	// Get products by variations - 3.
 	public function get_products_by_variations( $attributes = array(), $attribute = array(), $linked_variation_products = array() ) {
 
 		$tax_query       = array();
@@ -155,7 +162,7 @@ class WooLinkedVariation {
 		return $getProducts ? wp_list_pluck( $getProducts, 'ID' ) : array();
 	}
 
-	// Get linked variations - 4
+	// Get linked variations - 4.
 	public function get_linked_variations() {
 
 		// get linked variation
@@ -180,22 +187,22 @@ class WooLinkedVariation {
 		return $attributes;
 	}
 
-	// Get linked products - 5
+	// Get linked products - 5.
 	public function get_linked_products() {
 
-		// get linked variation
+		// Get linked variation
 		$linked_variation_id = get_post_meta( get_the_ID(), 'linked_variation_id', true );
 		if ( ! $linked_variation_id || 'publish' !== get_post_status( $linked_variation_id ) ) {
 			return false;
 		}
 
-		// get products
+		// Get products.
 		$linked_variation_products = get_post_meta( $linked_variation_id, 'linked_variation_products', true );
 
 		return $linked_variation_products;
 	}
 
-	// render linked variation
+	// Rnder linked variation.
 	public function render_linked_variation_frontend() {
 		// get linked variations
 		$variations = $this->get_linked_variations();
@@ -222,13 +229,23 @@ class WooLinkedVariation {
 		endif;
 	}
 
-	// Enqueue scripts
+	// Enqueue scripts.
 	public function frontend_enqueue_scripts( $hook ) {
 		if ( is_product() ) {
-			wp_enqueue_script( 'woo-linked-variation-frontend', plugins_url( 'assets/js/woo-linked-variation-frontend.js', LVFW_FILE ), array( 'jquery' ) );
-			wp_enqueue_style( 'woo-linked-variation-frontend', plugins_url( 'assets/css/woo-linked-variation-frontend.css', LVFW_FILE ), array() );
+			wp_enqueue_script(
+				'woo-linked-variation-frontend',
+				plugins_url( 'assets/js/woo-linked-variation-frontend.js', LVFW_FILE ),
+				array( 'jquery' ),
+				LVFW_VERSION
+			);
+			wp_enqueue_style(
+				'woo-linked-variation-frontend',
+				plugins_url( 'assets/css/woo-linked-variation-frontend.css', LVFW_FILE ),
+				array(),
+				LVFW_VERSION
+			);
 		}
 	}
 }
 
-WooLinkedVariation::getInstance();
+WooLinkedVariation::get_instance();

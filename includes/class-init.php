@@ -8,21 +8,51 @@
 
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
+/**
+ * Main Plugin Class.
+ *
+ * @since 2.0.0
+ * @package Lvfw
+ */
 final class Init {
 
+	/**
+	 * The actual singleton's instance almost always resides inside a static
+	 * field. In this case, the static field is an array, where each subclass of
+	 * the Singleton stores its own instance.
+	 *
+	 * @since 2.0.0
+	 * @var object
+	 */
 	private static $instance = null;
 
+	/**
+	 * Singleton's constructor should not be public. However, it can't be
+	 * private either if we want to allow subclassing.
+	 *
+	 * @since 2.0.0
+	 */
 	private function __construct() {
 		// Prevent direct instantiation.
 	}
 
-	public static function getInstance() {
-		if ( self::$instance === null ) {
+	/**
+	 * The method you use to get the Singleton's instance.
+	 *
+	 * @since 2.0.0
+	 */
+	public static function get_instance() {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
 	}
 
+	/**
+	 * Run the plugin.
+	 *
+	 * @since 2.0.0
+	 */
 	public function run() {
 		// Fired when activate.
 		register_activation_hook( LVFW_FILE, array( __CLASS__, 'activate' ) );
@@ -43,10 +73,25 @@ final class Init {
 		$this->includes();
 	}
 
+	/**
+	 * Activate Hook.
+	 *
+	 * @since 2.0.0
+	 */
 	public static function activate() {}
 
+	/**
+	 * Deactivate Hook.
+	 *
+	 * @since 2.0.0
+	 */
 	public static function deactivate() {}
 
+	/**
+	 * Load plugin textdomain
+	 *
+	 * @since 2.0.0
+	 */
 	public static function load_textdomain() {
 		load_plugin_textdomain(
 			'linked-variation-for-woocommerce',
@@ -55,6 +100,11 @@ final class Init {
 		);
 	}
 
+	/**
+	 * Admin Notice.
+	 *
+	 * @since 2.0.0
+	 */
 	public static function admin_notice() {
 		if ( ! current_user_can( 'activate_plugins' ) || ! class_exists( 'WooCommerce' ) ) {
 			return;
@@ -87,7 +137,7 @@ final class Init {
 		}
 
 		// Check if WooCommerce is installed but not activated.
-		if ( isset( $installed_plugins[ $plugin_path ] ) && ! in_array( $plugin_path, $active_plugins ) ) {
+		if ( isset( $installed_plugins[ $plugin_path ] ) && ! in_array( $plugin_path, $active_plugins, true ) ) {
 			$activate_url = wp_nonce_url(
 				add_query_arg(
 					array(
@@ -117,11 +167,17 @@ final class Init {
 		if ( ! empty( $notice_html ) ) {
 			printf(
 				'<div class="notice notice-error is-dismissible"><p>%s</p></div>',
-				$notice_html
+				wp_kses_post( $notice_html )
 			);
 		}
 	}
 
+	/**
+	 * Add plugin action links.
+	 *
+	 * @since 2.0.0
+	 * @param array $links Action links.
+	 */
 	public function add_plugin_action_links( $links ) {
 		$links = array_merge(
 			array(
@@ -133,6 +189,11 @@ final class Init {
 		return $links;
 	}
 
+	/**
+	 * Include required files.
+	 *
+	 * @since 2.0.0
+	 */
 	private function includes() {
 		// Include required files.
 		require_once LVFW_INCLUDE_PATH . 'admin/loader.php';
@@ -140,4 +201,4 @@ final class Init {
 }
 
 // Get the singleton instance and run the plugin.
-Init::getInstance()->run();
+Init::get_instance()->run();

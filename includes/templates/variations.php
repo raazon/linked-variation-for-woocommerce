@@ -1,4 +1,12 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * Template for variations.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
+
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 ?>
 
 <div class="woo-linked-variation-wrap">
@@ -12,8 +20,12 @@
 			<div class="woo-linked-variation">
 			
 				<div class="linked-variation-label">
-					<strong class="variation-label"><?php printf( '%1$s:', $variation['name'] ); ?></strong>
-					<span class="variation-selection" data-variant="<?php echo esc_attr( $current_variation_name ); ?>"><?php echo esc_html( $current_variation_name ); ?></span>
+					<strong class="variation-label">
+						<?php printf( '%1$s:', esc_html( $variation['name'] ) ); ?>
+					</strong>
+					<span class="variation-selection" data-variant="<?php echo esc_attr( $current_variation_name ); ?>">
+						<?php echo esc_html( $current_variation_name ); ?>
+					</span>
 				</div>
 
 				<div class="linked-variations">
@@ -34,9 +46,13 @@
 										<img src="<?php echo has_post_thumbnail( $product_id ) ? get_the_post_thumbnail_url( $product_id, 'thumbnail' ) : wc_placeholder_img_src( 'thumbnail' ); ?>" alt="<?php echo esc_attr( $variation_name ); ?>">
 									</span>
 								<?php elseif ( ! $variation['show_image'] && ( $current_product_id !== $product_id ) ) : ?>
-									<a href="<?php echo get_the_permalink( $product_id ); ?>" title="<?php echo get_the_title( $product_id ); ?>" class="variation-item"><?php echo esc_html( $variation_name ); ?></a>
+									<a href="<?php echo get_the_permalink( $product_id ); ?>" title="<?php echo get_the_title( $product_id ); ?>" class="variation-item">
+										<?php echo esc_html( $variation_name ); ?>
+									</a>
 								<?php else : ?>
-									<span class="variation-item active-variation" title="<?php echo get_the_title( $product_id ); ?>"><?php echo esc_attr( $variation_name ); ?></span>
+									<span class="variation-item active-variation" title="<?php echo get_the_title( $product_id ); ?>">
+										<?php echo esc_attr( $variation_name ); ?>
+									</span>
 								<?php endif; ?>
 
 							</li>

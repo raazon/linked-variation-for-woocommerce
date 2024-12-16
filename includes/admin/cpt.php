@@ -1,6 +1,19 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * Register Custom Post Type.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
 
-// Register Custom Post Type Woo Linked Variation
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
+
+/**
+ * Register Custom Post Type.
+ *
+ * @since 2.0.0
+ * @package Lvfw
+ */
 function lvfw_create_woolinkedvariation_cpt() {
 	$labels = array(
 		'name'                  => _x( 'Woo Linked Variations', 'Post Type General Name', 'linked-variation-for-woocommerce' ),

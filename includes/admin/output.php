@@ -1,4 +1,12 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * Admin output.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
+
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
 // Add an nonce field so we can check for it later.
 wp_nonce_field( 'lvfw_products_nonce_action', 'lvfw_products_nonce' );

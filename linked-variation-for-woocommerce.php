@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name:       Linked Variation for WooCommerce
  * Plugin URI:        https://raazon.com/
@@ -29,5 +28,10 @@ define('LVFW_PATH', trailingslashit(plugin_dir_path(__FILE__)));
 define('LVFW_URL', trailingslashit(plugin_dir_url(__FILE__)));
 define('LVFW_INCLUDE_PATH', LVFW_PATH . 'includes/');
 
-// Loading init file
-require_once LVFW_PATH . '/includes/init.php';
+/**
+ * Run the plugin.
+ */
+function lvfw_run() {
+	require_once LVFW_INCLUDE_PATH . 'init.php';
+}
+lvfw_run();

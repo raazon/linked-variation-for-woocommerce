@@ -36,4 +36,5 @@ define( 'LVFW_INCLUDE_PATH', LVFW_PATH . 'includes/' );
 function lvfw_run() {
 	require_once LVFW_INCLUDE_PATH . 'class-init.php';
 }
+
 lvfw_run();

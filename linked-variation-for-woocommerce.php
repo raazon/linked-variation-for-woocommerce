@@ -19,6 +19,11 @@
 
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
+/**
+ * Main class file.
+ *
+ * @since 2.0.0
+ */
 final class WooLinkedVariation {
 	/**
 	 * The single instance of the class.
@@ -36,7 +41,7 @@ final class WooLinkedVariation {
 		// Define plugin constants.
 		$this->constants();
 
-		// Register the autoloader
+		// Register the autoloader.
 		spl_autoload_register( array( $this, 'autoloader' ) );
 
 		// Fired when activate.
@@ -69,7 +74,7 @@ final class WooLinkedVariation {
 	/**
 	 * Prevent unserializing of the instance.
 	 *
-	 * @throws RuntimeException If unserialization is attempted.
+	 * @throws \RuntimeException If unserialization is attempted.
 	 */
 	public function __wakeup() {
 		throw new \RuntimeException( 'Unserializing a singleton is not allowed.' );
@@ -81,7 +86,7 @@ final class WooLinkedVariation {
 	 * @return WooLinkedVariation The instance.
 	 */
 	public static function get_instance(): self {
-		if ( self::$instance === null ) {
+		if ( null === self::$instance ) {
 			self::$instance = new self();
 		}
 

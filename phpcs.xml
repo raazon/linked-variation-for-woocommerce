@@ -22,22 +22,23 @@
 	<arg value="sp" /> <!-- Show sniff and progress -->
 	<arg name="colors" /> <!-- Show results with colors -->
 	<arg name="basepath" value="." /> <!-- Strip the file paths down to the relevant bit -->
-	<arg name="parallel" value="20" /> <!-- Enables parallel processing when available for faster
-	results. -->
+	<arg name="parallel" value="20" /> <!-- Enables parallel processing when available for faster results. -->
 	<arg name="extensions" value="php" /> <!-- Limit to PHP files -->
 
-	<!-- For help in understanding this testVersion:
-	https://github.com/PHPCompatibility/PHPCompatibility#sniffing-your-code-for-compatibility-with-specific-php-versions -->
+	<!-- For help in understanding this testVersion: https://github.com/PHPCompatibility/PHPCompatibility#sniffing-your-code-for-compatibility-with-specific-php-versions -->
 	<config name="testVersion" value="7.2-" />
 
-	<!-- Rules: WordPress Coding Standards - see
-			https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards -->
+	<!-- Rules: WordPress Coding Standards - see https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards -->
 	<rule ref="WordPress-Core" />
 	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-Extra" />
 
-	<!-- For help in understanding these custom sniff properties:
-	https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties -->
+	<!-- Exclude specific rule -->
+	<rule ref="WordPress.Files.FileName">
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+	</rule>
+
+	<!-- For help in understanding these custom sniff properties: https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties -->
 	<config name="minimum_supported_wp_version" value="6.3" />
 	<rule ref="WordPress" />
 

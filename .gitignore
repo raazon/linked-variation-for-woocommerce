@@ -9,6 +9,7 @@ logs
 *.sublime-workspace
 
 # composer
+vendor
 vendor/
 composer.lock
 

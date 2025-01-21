@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Enqueue admin scripts.
  *
@@ -7,39 +6,47 @@
  * @since 2.0.0
  */
 
-defined('ABSPATH') || die('Cheatin&#8217; uh?');
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
-// Admin enqueue scripts.
-function lvfw_admin_enqueue_scripts($hook) {
+/**
+ * Admin enqueue scripts.
+ *
+ * @since 2.0.0
+ * @package Lvfw
+ */
+function lvfw_admin_enqueue_scripts() {
 	// Get current admin screen, or null.
 	$screen = get_current_screen();
-	// verify admin screen object
-	if (is_object($screen)) {
+
+	// verify admin screen object.
+	if ( is_object( $screen ) ) {
 		// Enqueue only for specific post types.
-		if (in_array($screen->post_type, array('woolinkedvariation'), true)) {
+		if ( in_array( $screen->post_type, array( 'woolinkedvariation' ), true ) ) {
 			wp_enqueue_style(
 				'select2',
-				plugins_url('assets/css/select2.min.css', LVFW_FILE),
+				plugins_url( 'assets/css/select2.min.css', LVFW_FILE ),
 				array(),
 				LVFW_VERSION
 			);
 			wp_enqueue_script(
 				'select2',
-				plugins_url('assets/js/select2.min.js', LVFW_FILE),
-				array('jquery'),
-				LVFW_VERSION
+				plugins_url( 'assets/js/select2.min.js', LVFW_FILE ),
+				array( 'jquery' ),
+				LVFW_VERSION,
+				array()
 			);
 			wp_enqueue_script(
 				'woo-linked-variation',
-				plugins_url('assets/js/woo-linked-variation.js', LVFW_FILE),
-				array('jquery'),
-				LVFW_VERSION
+				plugins_url( 'assets/js/woo-linked-variation.js', LVFW_FILE ),
+				array( 'jquery' ),
+				LVFW_VERSION,
+				array()
 			);
 			wp_localize_script(
 				'woo-linked-variation',
 				'linked_variation_ajax_object',
 				array(
-					'ajax_url' => admin_url('admin-ajax.php'),
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
 				)
 			);
 			wp_enqueue_style(
@@ -64,4 +71,4 @@ function lvfw_admin_enqueue_scripts($hook) {
 	}
 }
 
-add_action('admin_enqueue_scripts', 'lvfw_admin_enqueue_scripts', 10, 1);
+add_action( 'admin_enqueue_scripts', 'lvfw_admin_enqueue_scripts', 10, 1 );

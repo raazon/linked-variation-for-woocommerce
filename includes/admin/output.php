@@ -32,7 +32,6 @@ if ( empty( $linked_variations ) ) {
 	);
 }
 
-
 ?>
 <div class="linked-variations">
 	<?php

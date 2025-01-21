@@ -24,6 +24,7 @@ function lvfw_cpt_meta_box( $post_type ) {
 		);
 	}
 }
+
 add_action( 'add_meta_boxes', 'lvfw_cpt_meta_box', 10, 1 );
 
 
@@ -123,4 +124,5 @@ function lvfw_save_post_hook( $post_id ) {
 		update_post_meta( $post_id, 'is_primary', array() );
 	}
 }
+
 add_action( 'save_post', 'lvfw_save_post_hook', 10, 1 );

@@ -1,42 +1,32 @@
-/* product selection */
-.linked_variation_products {
-  display: none;
+.linked-variations {
+	padding-top: 6px;
 }
 
-/* metbox */
-.meta-box-item {
-  padding: 10px;
-}
-.meta-box-item label {
-  display: block;
-  padding-bottom: 5px;
+.linked-variations .linked-variation:not(:last-of-type) {
+	padding-bottom: 12px;
+	/* border-bottom: 1px solid #8c8f94; */
 }
 
-/* shorting */
-#sortable {
-  margin: 0;
+.linked-variations .linked-variation:not(:first-of-type) {
+	padding-top: 12px;
 }
 
-#sortable li {
-  padding: 10px 15px;
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
+
+.linked-variation-source {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
 }
 
-#sortable li .inputs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.linked-variation-source .field-label {
+	min-width: 150px;
 }
 
-#sortable li .inputs label:not(:last-child) {
-  margin-right: 20px;
+.linked-variation-source .field-input {
+	width: 100%;
 }
 
-#sortable li .inputs label:last-child {
-  margin-right: 0;
-}
-
-#sortable li span {
-  margin-left: auto;
+.linked-variation-source .field-input select,
+.linked-variation-source .field-input input[type=text] {
+	width: 100%;
 }

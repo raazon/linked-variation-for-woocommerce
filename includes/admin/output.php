@@ -23,12 +23,12 @@ if ( empty( $linked_variations ) ) {
 			'categories' => array(),
 			'tags'       => array(),
 		),
-		array(
-			'source'     => 'categories',
-			'products'   => array(),
-			'categories' => array( 9, 10 ),
-			'tags'       => array(),
-		),
+		// array(
+		// 	'source'     => 'categories',
+		// 	'products'   => array(),
+		// 	'categories' => array( 9, 10 ),
+		// 	'tags'       => array(),
+		// ),
 	);
 }
 
@@ -38,11 +38,9 @@ if ( empty( $linked_variations ) ) {
 	foreach ( $linked_variations as $key => $link ) :
 		$source = isset( $link['source'] ) ? $link['source'] : 'products';
 		?>
-		<!-- variation -->
 		<div class="linked-variation">
 			<div class="linked-variation-source">
-				<label>
-					<?php echo esc_html__( 'Variation Source', 'linked-variation-for-woocommerce' ); ?>
+				<div class="field-label">
 					<select name="linked_variations[<?php echo esc_attr( $key ); ?>]source">
 						<option value="products" <?php selected( $source, 'products' ); ?>>
 							<?php echo esc_html__( 'Products', 'linked-variation-for-woocommerce' ); ?>
@@ -54,9 +52,32 @@ if ( empty( $linked_variations ) ) {
 							<?php echo esc_html__( 'Tags', 'linked-variation-for-woocommerce' ); ?>
 						</option>
 					</select>
-				</label>
+				</div>
+				<div class="field-input">
+					<input type="text">
+				</div>
 			</div>
 		</div>
-		<!-- variation end -->
 	<?php endforeach; ?>
+
+	<div class="linked-variation">
+		<div class="linked-variation-source">
+			<div class="field-label">
+				<?php echo esc_html__( 'Linked by attributes', 'linked-variation-for-woocommerce' ); ?>
+			</div>
+			<div class="field-input">
+				<input type="text">
+			</div>
+		</div>
+	</div>
+
+	<div class="linked-variation">
+		<div class="linked-variation-source">
+			<div class="field-label">
+				<button class="button button-primary" type="button">
+					<?php echo esc_html__( 'Add Variation +', 'linked-variation-for-woocommerce' ); ?>
+				</button>
+			</div>
+		</div>
+	</div>
 </div>

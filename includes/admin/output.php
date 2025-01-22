@@ -11,24 +11,18 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 // Add an nonce field so we can check for it later.
 wp_nonce_field( 'lvfw_products_nonce_action', 'lvfw_products_nonce' );
 
-
 $linked_variations = get_post_meta( $post->ID, 'linked_variations', true );
 
 // Check if the retrieved value is valid, otherwise use the default.
 if ( empty( $linked_variations ) ) {
 	$linked_variations = array(
 		array(
-			'source'     => 'products',
-			'products'   => array( 1, 2 ),
-			'categories' => array(),
-			'tags'       => array(),
+			'source'		=> 'products',
+			'products'		=> array( 1, 2 ),
+			'categories'	=> array(),
+			'tags'			=> array(),
+			'attributes'	=> array(),
 		),
-		// array(
-		// 	'source'     => 'categories',
-		// 	'products'   => array(),
-		// 	'categories' => array( 9, 10 ),
-		// 	'tags'       => array(),
-		// ),
 	);
 }
 

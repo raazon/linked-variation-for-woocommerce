@@ -17,8 +17,8 @@ $linked_variations = get_post_meta( $post->ID, 'linked_variations', true );
 if ( empty( $linked_variations ) ) {
 	$linked_variations = array(
 		array(
-			'source'		=> 'products',
-			'products'		=> array( 1, 2 ),
+			'source'		=> 'categories',
+			'products'		=> array( 31, 32 ),
 			'categories'	=> array(),
 			'tags'			=> array(),
 			'attributes'	=> array(),
@@ -31,11 +31,12 @@ if ( empty( $linked_variations ) ) {
 	<?php
 	foreach ( $linked_variations as $key => $link ) :
 		$source = isset( $link['source'] ) ? $link['source'] : 'products';
+		$products = isset( $link['products'] ) ? $link['products'] : [];
 		?>
 		<div class="linked-variation">
 			<div class="linked-variation-source">
 				<div class="field-label">
-					<select name="linked_variations[<?php echo esc_attr( $key ); ?>]source">
+					<select name="source">
 						<option value="products" <?php selected( $source, 'products' ); ?>>
 							<?php echo esc_html__( 'Products', 'linked-variation-for-woocommerce' ); ?>
 						</option>
@@ -48,7 +49,15 @@ if ( empty( $linked_variations ) ) {
 					</select>
 				</div>
 				<div class="field-input">
-					<input type="text">
+					<select name="product" multiple>
+						<?php if($products) : ?>
+							<?php foreach($products as $product) : ?>
+								<option value="<?php echo esc_attr($product); ?>" selected>
+									<?php echo esc_html(get_the_title($product)); ?>
+								</option>
+							<?php endforeach; ?>
+						<?php endif; ?>
+					</select>
 				</div>
 			</div>
 		</div>

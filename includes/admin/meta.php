@@ -48,9 +48,9 @@ function lvfw_cpt_meta_box_content_thank_you( $post ) {
  */
 function lvfw_save_post_hook( $post_id ) {
 	/*
-		 * We need to verify this came from the our screen and with proper authorization,
-		 * because save_post can be triggered at other times.
-		 */
+	* We need to verify this came from the our screen and with proper authorization,
+	* because save_post can be triggered at other times.
+	*/
 
 	// Check if our nonce is set.
 	if ( ! isset( $_POST['woo_linked_variation_products_nonce'] ) ) {
@@ -65,9 +65,9 @@ function lvfw_save_post_hook( $post_id ) {
 	}
 
 	/*
-		 * If this is an autosave, our form has not been submitted,
-		 * so we don't want to do anything.
-		 */
+	* If this is an autosave, our form has not been submitted,
+	* so we don't want to do anything.
+	*/
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return $post_id;
 	}

@@ -36,17 +36,18 @@ function lvfw_admin_enqueue_scripts() {
 				array()
 			);
 			wp_enqueue_script(
-				'woo-linked-variation',
-				plugins_url( 'assets/js/woo-linked-variation.js', LVFW_FILE ),
+				'lvfw-admin',
+				plugins_url( 'assets/js/lvfw-admin.js', LVFW_FILE ),
 				array( 'jquery' ),
 				LVFW_VERSION,
 				array()
 			);
 			wp_localize_script(
-				'woo-linked-variation',
-				'linked_variation_ajax_object',
+				'lvfw-admin',
+				'lvfw_ajax_object',
 				array(
-					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					'product_placeholder' => esc_html('Select product...', 'linked-variation-for-woocommerce')
 				)
 			);
 			wp_enqueue_style(
@@ -59,9 +60,9 @@ function lvfw_admin_enqueue_scripts() {
 				LVFW_VERSION
 			);
 			wp_enqueue_style(
-				'woo-linked-variation',
+				'lvfw-admin',
 				plugins_url(
-					'assets/css/woo-linked-variation.css',
+					'assets/css/lvfw-admin.css',
 					LVFW_FILE
 				),
 				array(),

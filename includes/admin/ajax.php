@@ -4,24 +4,36 @@
 function lvfw_get_source_data() {
     $search_term = isset($_REQUEST['search']) ? esc_attr($_REQUEST['search']) : '';
 
-    // Dummy data
-    $dummy_data = [
-        [ 'id' => 1, 'text' => 'Hello' ],
-        [ 'id' => 2, 'text' => 'World' ],
-        [ 'id' => 3, 'text' => 'Test Product' ],
-        [ 'id' => 4, 'text' => 'Another Product' ],
+    // Query WooCommerce products
+    $args = [
+        'limit' => 10, // Limit the number of results
+        'status' => 'publish', // Only include published products
+        'orderby' => 'title',
+        'order' => 'ASC',
     ];
 
-	// Filter the dummy data based on the search term
+	// Include a search query if provided
 	if (!empty($search_term)) {
-		$dummy_data = array_filter($dummy_data, function ($item) use ($search_term) {
-			return stripos($item['text'], $search_term) !== false;
-		});
+		$args['s'] = $search_term; // Search by product title
 	}
 
-	echo wp_json_encode(array_values($dummy_data));
+	// Use WooCommerce Product Query
+	$product_query = new WC_Product_Query($args);
+	$products = $product_query->get_products();
 
-	wp_die();
+    // Format the results for Select2
+    $results = [];
+    foreach ($products as $product) {
+        $results[] = [
+            'id' => $product->get_id(), // Product ID
+            'text' => $product->get_name(), // Product Name
+        ];
+    }
+
+    // Return the results as JSON
+    echo wp_json_encode($results);
+
+    wp_die(); // Required to terminate AJAX calls properly
 }
 
 add_action( 'wp_ajax_lvfw_get_source_data', 'lvfw_get_source_data' );

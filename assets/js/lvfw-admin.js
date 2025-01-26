@@ -1,35 +1,31 @@
-(function ($) {
-	"use strict";
-	jQuery(document).ready(function () {
-		// function
-		$(function () {
-			// product selection - select2
-			var data = [
-				{
-					id: 0,
-					text: 'enhancement'
-				},
-				{
-					id: 1,
-					text: 'bug'
-				},
-				{
-					id: 2,
-					text: 'duplicate'
-				},
-				{
-					id: 3,
-					text: 'invalid'
-				},
-				{
-					id: 4,
-					text: 'wontfix'
-				}
-			];
+jQuery(document).ready(function ($) {
+	// Function to toggle visibility and initialize Select2
+	function toggleFields($container) {
+		const selectedSource = $container.find('.source-picker').val();
 
-			var {ajaxurl, product_placeholder} = lvfw_ajax_object;
+		// Show/hide fields based on the selected source
+		const $products = $container.find('.products-picker');
+		const $categories = $container.find('.categories-picker');
+		const $tags = $container.find('.tags-picker');
 
-			$("select[name=product]").select2({
+		// Safely destroy Select2 before hiding
+		if ($products.data('select2')) {
+			$products.select2('destroy');
+		}
+
+		if ($categories.data('select2')) {
+			$categories.select2('destroy');
+		}
+
+		if ($tags.data('select2')) {
+			$tags.select2('destroy');
+		}
+
+		// Destructuring ajax objects
+		const { ajaxurl, product_placeholder, category_placeholder, tag_placeholder } = lvfw_ajax_object;
+
+		if (selectedSource === 'products') {
+			$products.show().select2({
 				width: "100%",
 				placeholder: product_placeholder,
 				multiple: true,
@@ -38,7 +34,7 @@
 				// data: data,
 				minimumInputLength: 3,
 				ajax: {
-					url: ajaxurl + '?action=lvfw_get_source_data', // Your REST API endpoint
+					url: ajaxurl + '?action=lvfw_get_source_products', // Your REST API endpoint
 					dataType: 'json',
 					delay: 250, // Delay in milliseconds to avoid excessive API calls
 					data: function (params) {
@@ -53,45 +49,73 @@
 					}
 				}
 			});
-
-			// disable auto sorting select2
-			$("select").on("select2:select", function (evt) {
-				var element = evt.params.data.element;
-				var $element = $(element);
-
-				$element.detach();
-				$(this).append($element);
-				$(this).trigger("change");
+			$categories.hide();
+			$tags.hide();
+		} else if (selectedSource === 'categories') {
+			$categories.show().select2({
+				width: "100%",
+				placeholder: category_placeholder,
+				multiple: true,
+				allowClear: true,
+				tags: false,
+				// data: data,
+				minimumInputLength: 3,
+				ajax: {
+					url: ajaxurl + '?action=lvfw_get_source_taxonomy&taxonomy=product_cat', // Your REST API endpoint
+					dataType: 'json',
+					delay: 250, // Delay in milliseconds to avoid excessive API calls
+					data: function (params) {
+						return {
+							search: params.term // Send the search term as a query parameter
+						};
+					},
+					processResults: function (data) {
+						return {
+							results: data // Map the data directly
+						};
+					}
+				}
 			});
-
-			// variation shorting - jquery UI sortable
-			$("#sortable").sortable({
-				axis: "y",
-				cursor: "move",
-				placeholder: "ui-state-highlight",
-				update: function (event, ui) {
-					var order = $(this).sortable("toArray");
-					var postId = $(this).data("id");
-					$.ajax({
-						type: "POST",
-						url: linked_variation_ajax_object.ajax_url,
-						data: {
-							action: "linked_by_attributes_ordering",
-							ordering: order,
-							post_id: postId,
-						},
-						beforeSend: function () { },
-						success: function (response) {
-							console.log(response);
-						},
-						error: function (errorThrown, status, error) {
-							console.log(status);
-						},
-					});
-				},
+			$products.hide();
+			$tags.hide();
+		} else if (selectedSource === 'tags') {
+			$tags.show().select2({
+				width: "100%",
+				placeholder: tag_placeholder,
+				multiple: true,
+				allowClear: true,
+				tags: false,
+				// data: data,
+				minimumInputLength: 3,
+				ajax: {
+					url: ajaxurl + '?action=lvfw_get_source_taxonomy&taxonomy=product_tag', // Your REST API endpoint
+					dataType: 'json',
+					delay: 250, // Delay in milliseconds to avoid excessive API calls
+					data: function (params) {
+						return {
+							search: params.term // Send the search term as a query parameter
+						};
+					},
+					processResults: function (data) {
+						return {
+							results: data // Map the data directly
+						};
+					}
+				}
 			});
+			$products.hide();
+			$categories.hide();
+		}
+	}
 
-			$("#sortable").disableSelection();
-		});
+	// Initialize visibility and Select2 for all linked-variation items
+	$('.linked-variation-item').each(function () {
+		toggleFields($(this));
 	});
-})(jQuery);
+
+	// Handle change event on the source dropdown
+	$(document).on('change', '.source-picker', function () {
+		const $container = $(this).closest('.linked-variation-item');
+		toggleFields($container);
+	});
+});

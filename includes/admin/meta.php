@@ -125,4 +125,61 @@ function lvfw_save_post_hook( $post_id ) {
 	}
 }
 
-add_action( 'save_post', 'lvfw_save_post_hook', 10, 1 );
+add_action( 'save_postX', 'lvfw_save_post_hook', 10, 1 );
+
+add_action( 'save_post', function($post_id) {
+
+	if('woolinkedvariation' !== get_post_type($post_id)) {
+		return;
+	}
+
+	/*
+	* If this is an autosave, our form has not been submitted,
+	* so we don't want to do anything.
+	*/
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+
+	$linked_variations = array(
+		array(
+			'source'		=> 'categories',
+			'products'		=> array( 31, 32 ),
+			'categories'	=> array(),
+			'tags'			=> array(),
+			'attributes'	=> array(),
+		)
+	);
+
+	// Check if the data is available in $_POST
+	if ( 1 ) {
+		// Initialize an empty array to store the variations
+		$linked_variations = [];
+
+		// Get the data from $_POST
+		$sources     = isset( $_POST['source'] ) ? (array) $_POST['source'] : [];
+		$categories  = isset( $_POST['categories'] ) ? (array) $_POST['categories'] : [];
+		$tags        = isset( $_POST['tags'] ) ? (array) $_POST['tags'] : [];
+		$products    = isset( $_POST['products'] ) ? (array) $_POST['products'] : [];
+		$attributes  = isset( $_POST['attributes'] ) ? (array) $_POST['attributes'] : [];
+
+		// Iterate through the sources
+		foreach ( $sources as $index => $source ) {
+			$linked_variations[$index] = [
+				'source'     => $source,
+				'categories' => isset( $categories ) ? array_map( 'intval', $categories ) : [],
+				// 'tags'       => isset( $tags[ $index ] ) ? array_map( 'intval', $tags[ $index ] ) : [],
+				// 'products'   => isset( $products[ $index ] ) ? array_map( 'intval', $products[ $index ] ) : [],
+				// 'attributes' => isset( $attributes[ $index ] ) ? $attributes[ $index ] : [],
+			];
+		}
+
+		error_log(print_r($_POST, true));
+
+		// Update the post meta with the structured data
+		// update_post_meta( $post_id, 'linked_variations', $linked_variations );
+	}
+
+	// error_log(print_r($_POST, true));
+}, 10, 1 );

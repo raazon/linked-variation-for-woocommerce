@@ -47,7 +47,9 @@ function lvfw_admin_enqueue_scripts() {
 				'lvfw_ajax_object',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'product_placeholder' => esc_html('Select product...', 'linked-variation-for-woocommerce')
+					'product_placeholder' => esc_html('Select products...', 'linked-variation-for-woocommerce'),
+					'category_placeholder' => esc_html('Select categories...', 'linked-variation-for-woocommerce'),
+					'tag_placeholder' => esc_html('Select tags...', 'linked-variation-for-woocommerce')
 				)
 			);
 			wp_enqueue_style(

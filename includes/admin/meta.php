@@ -82,13 +82,13 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 		$linked_variations = [];
 
 		// Loop through each source and build the desired structure
-		foreach ($sources as $source) {
-			$linked_variations[] = [
+		foreach ($sources as $index => $source) {
+			$linked_variations[$index] = [
 				'source' => $source,
-				'products' => $products,
-				'categories' => $categories,
-				'tags' => $tags,
-				'attributes' => $attributes,
+				'products' => ($source === 'products' && isset($products[$index])) ? $products[$index] : [],
+				'categories' => ($source === 'categories' && isset($categories[$index])) ? $categories[$index] : [],
+				'tags' => ($source === 'tags' && isset($tags[$index])) ? $tags[$index] : [],
+				'attributes' => ($source === 'attributes' && isset($attributes[$index])) ? $attributes[$index] : [],
 			];
 		}
 

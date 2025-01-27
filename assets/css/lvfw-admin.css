@@ -1,14 +1,13 @@
 .linked-variations {
 	padding-top: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 }
 
-.linked-variations .linked-variation-item:not(:last-of-type) {
-	padding-bottom: 12px;
-	/* border-bottom: 1px solid #8c8f94; */
-}
-
-.linked-variations .linked-variation-item:not(:first-of-type) {
-	padding-top: 12px;
+.linked-variations .linked-variation-item {
+	background: #f0f0f170;
+	padding: 15px;
 }
 
 .linked-variation-item .linked-variation:not(:last-of-type) {

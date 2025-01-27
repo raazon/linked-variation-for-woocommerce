@@ -46,140 +46,76 @@ function lvfw_cpt_meta_box_content_thank_you( $post ) {
  *
  * @param int $post_id The ID of the post being saved.
  */
-function lvfw_save_post_hook( $post_id ) {
-	/*
-	* We need to verify this came from the our screen and with proper authorization,
-	* because save_post can be triggered at other times.
-	*/
-
-	// Check if our nonce is set.
-	if ( ! isset( $_POST['woo_linked_variation_products_nonce'] ) ) {
-		return $post_id;
-	}
-
-	$nonce = $_POST['woo_linked_variation_products_nonce'];
-
-	// Verify that the nonce is valid.
-	if ( ! wp_verify_nonce( $nonce, 'woo_linked_variation_products_nonce_action' ) ) {
-		return $post_id;
-	}
-
+function lvfw_save_post_hook( $post_id, $post, $update ) {
 	/*
 	* If this is an autosave, our form has not been submitted,
 	* so we don't want to do anything.
 	*/
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-		return $post_id;
+		return;
 	}
 
-	// Check the user's permissions.
-	if ( 'page' == $_POST['post_type'] ) {
-		if ( ! current_user_can( 'edit_page', $post_id ) ) {
-			return $post_id;
-		}
-	} elseif ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return $post_id;
-	}
-
-	/* OK, it's safe for us to save the data now. */
-
-	// unlink previous values
-	$linked_variation_products = get_post_meta( $post_id, 'linked_variation_products', true );
-	if ( $linked_variation_products ) {
-		foreach ( $linked_variation_products as $linked_variation_product ) {
-			update_post_meta( $linked_variation_product, 'linked_variation_id', '' );
-		}
-	}
-
-	// Update the linked_variation_products meta field.
-	if ( isset( $_POST['linked_variation_products'] ) ) {
-		update_post_meta( $post_id, 'linked_variation_products', array_map( 'intval', $_POST['linked_variation_products'] ) );
-		foreach ( $_POST['linked_variation_products'] as $linked_variation_product ) {
-			if ( intval( $linked_variation_product ) && intval( $post_id ) ) {
-				update_post_meta( intval( $linked_variation_product ), 'linked_variation_id', intval( $post_id ) );
-			}
-		}
-	} else {
-		update_post_meta( $post_id, 'linked_variation_products', array() );
-	}
-
-	// save attribute meta
-	if ( isset( $_POST['_linked_by_attributes'] ) ) {
-		update_post_meta( $post_id, '_linked_by_attributes', array_filter( $_POST['_linked_by_attributes'], 'intval' ) );
-	} else {
-		update_post_meta( $post_id, '_linked_by_attributes', array() );
-	}
-
-	// save show image meta
-	if ( isset( $_POST['show_images'] ) ) {
-		update_post_meta( $post_id, 'show_images', array_filter( $_POST['show_images'], 'intval' ) );
-	} else {
-		update_post_meta( $post_id, 'show_images', array() );
-	}
-
-	// save is primary meta
-	if ( isset( $_POST['is_primary'] ) ) {
-		update_post_meta( $post_id, 'is_primary', array_filter( $_POST['is_primary'], 'intval' ) );
-	} else {
-		update_post_meta( $post_id, 'is_primary', array() );
-	}
-}
-
-add_action( 'save_postX', 'lvfw_save_post_hook', 10, 1 );
-
-add_action( 'save_post', function($post_id) {
-
+	/*
+	* If post type is not woolinkedvariation.
+	*/
 	if('woolinkedvariation' !== get_post_type($post_id)) {
 		return;
 	}
 
-	/*
-	* If this is an autosave, our form has not been submitted,
-	* so we don't want to do anything.
-	*/
-	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+	// Check the user's permissions.
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
 		return;
 	}
 
+	/* OK, it's safe for us to save the data now. */
 
-	$linked_variations = array(
-		array(
-			'source'		=> 'categories',
-			'products'		=> array( 31, 32 ),
-			'categories'	=> array(),
-			'tags'			=> array(),
-			'attributes'	=> array(),
-		)
-	);
+	// Get the data from $_POST
+	$sources     = isset( $_POST['source'] ) ? (array) $_POST['source'] : [];
+	$products    = isset( $_POST['products'] ) ? (array) $_POST['products'] : [];
+	$categories  = isset( $_POST['categories'] ) ? (array) $_POST['categories'] : [];
+	$tags        = isset( $_POST['tags'] ) ? (array) $_POST['tags'] : [];
+	$attributes  = isset( $_POST['attributes'] ) ? (array) $_POST['attributes'] : [];
 
 	// Check if the data is available in $_POST
-	if ( 1 ) {
+	if ( !empty($sources) ) {
 		// Initialize an empty array to store the variations
 		$linked_variations = [];
 
-		// Get the data from $_POST
-		$sources     = isset( $_POST['source'] ) ? (array) $_POST['source'] : [];
-		$categories  = isset( $_POST['categories'] ) ? (array) $_POST['categories'] : [];
-		$tags        = isset( $_POST['tags'] ) ? (array) $_POST['tags'] : [];
-		$products    = isset( $_POST['products'] ) ? (array) $_POST['products'] : [];
-		$attributes  = isset( $_POST['attributes'] ) ? (array) $_POST['attributes'] : [];
-
-		// Iterate through the sources
-		foreach ( $sources as $index => $source ) {
-			$linked_variations[$index] = [
-				'source'     => $source,
-				'categories' => isset( $categories ) ? array_map( 'intval', $categories ) : [],
-				// 'tags'       => isset( $tags[ $index ] ) ? array_map( 'intval', $tags[ $index ] ) : [],
-				// 'products'   => isset( $products[ $index ] ) ? array_map( 'intval', $products[ $index ] ) : [],
-				// 'attributes' => isset( $attributes[ $index ] ) ? $attributes[ $index ] : [],
+		// Loop through each source and build the desired structure
+		foreach ($sources as $source) {
+			$linked_variations[] = [
+				'source' => $source,
+				'products' => $products,
+				'categories' => $categories,
+				'tags' => $tags,
+				'attributes' => $attributes,
 			];
 		}
 
-		error_log(print_r($_POST, true));
-
 		// Update the post meta with the structured data
-		// update_post_meta( $post_id, 'linked_variations', $linked_variations );
+		update_post_meta($post_id, 'linked_variations', $linked_variations);
 	}
 
-	// error_log(print_r($_POST, true));
-}, 10, 1 );
+	// save attribute meta
+	// if ( isset( $_POST['_linked_by_attributes'] ) ) {
+	// 	update_post_meta( $post_id, '_linked_by_attributes', array_filter( $_POST['_linked_by_attributes'], 'intval' ) );
+	// } else {
+	// 	update_post_meta( $post_id, '_linked_by_attributes', array() );
+	// }
+
+	// save show image meta
+	// if ( isset( $_POST['show_images'] ) ) {
+	// 	update_post_meta( $post_id, 'show_images', array_filter( $_POST['show_images'], 'intval' ) );
+	// } else {
+	// 	update_post_meta( $post_id, 'show_images', array() );
+	// }
+
+	// save is primary meta
+	// if ( isset( $_POST['is_primary'] ) ) {
+	// 	update_post_meta( $post_id, 'is_primary', array_filter( $_POST['is_primary'], 'intval' ) );
+	// } else {
+	// 	update_post_meta( $post_id, 'is_primary', array() );
+	// }
+}
+
+add_action( 'save_post', 'lvfw_save_post_hook', 10, 3 );

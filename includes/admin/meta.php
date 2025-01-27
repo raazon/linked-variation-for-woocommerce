@@ -118,4 +118,4 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 	// }
 }
 
-add_action( 'save_post', 'lvfw_save_post_hook', 10, 3 );
+// add_action( 'save_post', 'lvfw_save_post_hook', 10, 3 );

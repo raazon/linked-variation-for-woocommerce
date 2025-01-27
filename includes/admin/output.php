@@ -11,37 +11,52 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 // Add an nonce field so we can check for it later.
 wp_nonce_field( 'lvfw_products_nonce_action', 'lvfw_products_nonce' );
 
-$linked_variations = get_post_meta( $post->ID, 'linked_variations', true );
+// $linked_variations = get_post_meta( $post->ID, 'linked_variations', true );
 
 // delete_post_meta($post->ID, 'linked_variations');
 
 // Check if the retrieved value is valid, otherwise use the default.
-// if ( empty( $linked_variations ) ) {
-// 	$linked_variations = array(
-// 		array(
-// 			'source'		=> 'categories',
-// 			'products'		=> array(),
-// 			'categories'	=> array(16, 17),
-// 			'tags'			=> array(),
-// 			'attributes'	=> array(),
-// 		),
-// 		array(
-// 			'source'		=> 'products',
-// 			'products'		=> array( 31, 32 ),
-// 			'categories'	=> array(),
-// 			'tags'			=> array(),
-// 			'attributes'	=> array(),
-// 		),
-// 		array(
-// 			'source'		=> 'tags',
-// 			'products'		=> array(),
-// 			'categories'	=> array(),
-// 			'tags'			=> array(19, 20),
-// 			'attributes'	=> array(),
-// 		),
-// 	);
-// }
+if ( empty( $linked_variations ) ) {
+	$linked_variations = array(
+		array(
+			'source'		=> 'products',
+			'products'		=> array( 31, 32 ),
+			'categories'	=> array(),
+			'tags'			=> array(),
+			'attributes'	=> array(
+				[
+					'color' => true,
+					'show_images' => true,
+				],
+				[
+					'size' => true,
+					'show_images' => true,
+				]
+			),
+		),
+		array(
+			'source'		=> 'categories',
+			'products'		=> array(),
+			'categories'	=> array(16, 17),
+			'tags'			=> array(),
+			'attributes'	=> array(),
+		),
+		array(
+			'source'		=> 'tags',
+			'products'		=> array(),
+			'categories'	=> array(),
+			'tags'			=> array(19, 20),
+			'attributes'	=> array(),
+		),
+	);
+}
 
+// Return if linked variations is empty
+if(empty($linked_variations)) {
+	return;
+}
+
+$product_attributes = wc_get_attribute_taxonomies();
 ?>
 <div class="linked-variations">
 	<?php
@@ -110,7 +125,28 @@ $linked_variations = get_post_meta( $post->ID, 'linked_variations', true );
 						<?php echo esc_html__( 'Linked by attributes', 'linked-variation-for-woocommerce' ); ?>
 					</div>
 					<div class="field-input">
-						<input type="text">
+						<div class="attributes">
+							<?php if(!empty($product_attributes)) : 
+								foreach($product_attributes as $key => $attribute) : ?>
+									<div class="attribute-item">
+										<span class="dashicons dashicons-move"></span>
+										<label>
+											<?php 
+											printf(
+												'<input name="xx" type="checkbox" value"%1$d"> %2$s',
+												$attribute->attribute_id,
+												$attribute->attribute_label,
+											);
+											?>
+										</label>
+										<label>
+											<input name="xx" type="checkbox">
+											Show Images
+										</label>
+									</div>
+								<?php endforeach;
+							endif; ?>
+						</div>
 					</div>
 				</div>
 			</div>

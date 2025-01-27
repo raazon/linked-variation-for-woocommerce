@@ -118,4 +118,19 @@ jQuery(document).ready(function ($) {
 		const $container = $(this).closest('.linked-variation-item');
 		toggleFields($container);
 	});
+
+	// Initialize variation item shorting
+	$(".linked-variations").sortable({
+		axis: "y", // Allow sorting only vertically
+		cursor: "move", // Change cursor to "move" while dragging
+		placeholder: "ui-state-highlight", // Use a placeholder for the drop position
+	});
+
+	// Initialize attributes item shorting
+	$(".linked-variations .attributes").sortable({
+		axis: "y", // Allow sorting only vertically
+		cursor: "move", // Change cursor to "move" while dragging
+		placeholder: "ui-state-highlight", // Use a placeholder for the drop position
+	});
+
 });

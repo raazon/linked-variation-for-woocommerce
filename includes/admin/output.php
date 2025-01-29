@@ -132,6 +132,7 @@ $product_attributes = wc_get_attribute_taxonomies();
 										<span class="dashicons dashicons-move"></span>
 										<label>
 											<?php 
+											
 											printf(
 												'<input name="xx" type="checkbox" value"%1$d"> %2$s',
 												$attribute->attribute_id,

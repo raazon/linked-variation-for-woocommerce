@@ -132,5 +132,4 @@ jQuery(document).ready(function ($) {
 		cursor: "move", // Change cursor to "move" while dragging
 		placeholder: "ui-state-highlight", // Use a placeholder for the drop position
 	});
-
 });

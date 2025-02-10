@@ -88,7 +88,7 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 				'products' => ($source === 'products' && isset($products[$index])) ? $products[$index] : [],
 				'categories' => ($source === 'categories' && isset($categories[$index])) ? $categories[$index] : [],
 				'tags' => ($source === 'tags' && isset($tags[$index])) ? $tags[$index] : [],
-				'attributes' => ($source === 'attributes' && isset($attributes[$index])) ? $attributes[$index] : [],
+				'attributes' => isset($attributes[$index]) ? $attributes[$index] : [],
 			];
 		}
 
@@ -118,4 +118,4 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 	// }
 }
 
-// add_action( 'save_post', 'lvfw_save_post_hook', 10, 3 );
+add_action( 'save_post', 'lvfw_save_post_hook', 10, 3 );

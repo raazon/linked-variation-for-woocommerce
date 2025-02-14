@@ -1,0 +1,30 @@
+{
+	"name": "razon/linked-variation-for-woocommerce",
+    "description": "Linked separate products together by product attributes and More. Needs WooCommerce to work.",
+    "type": "wordpress-plugin",
+    "license": "GPL 3.0",
+    "authors": [
+        {
+            "name": "Razon Komar Pal",
+            "email": "raazzon@gmail.com"
+        }
+    ],
+    "require-dev": {
+		"phpunit/phpunit": "^9.6",
+		"wp-phpunit/wp-phpunit": "^6.0",
+		"squizlabs/php_codesniffer": "^3.7",
+		"wp-coding-standards/wpcs": "^3.0",
+		"phpstan/phpstan": "^2.0",
+		"yoast/phpunit-polyfills": "^3.0"
+	},
+	"scripts": {
+		"test": "./vendor/bin/phpunit",
+		"phpcs": "@php ./vendor/bin/phpcs --standard=phpcs.xml",
+		"phpcbf": "@php ./vendor/bin/phpcbf --standard=phpcs.xml"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
+}

@@ -1,7 +1,4 @@
 <?php defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly.
-
-// $key = isset($key) ? $key : '';
-// $product_attributes = wc_get_attribute_taxonomies();
 ?>
 <div class="linked-variation-item">
 	<div class="linked-variation">

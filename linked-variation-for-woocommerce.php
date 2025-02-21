@@ -275,4 +275,3 @@ final class WooLinkedVariation {
 // Initialize the plugin.
 WooLinkedVariation::get_instance();
 
-

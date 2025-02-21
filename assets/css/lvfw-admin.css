@@ -8,6 +8,7 @@
 .linked-variations .linked-variation-item {
 	background: #f0f0f170;
 	padding: 15px;
+	position: relative;
 }
 
 .linked-variation-item .linked-variation:not(:last-of-type) {
@@ -71,4 +72,13 @@
 
 .linked-variation-repeater {
 	padding-top: 24px;
+}
+
+.remove-variation {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	cursor: pointer;
+	color: #b32d2e;
+	text-decoration: underline;
 }

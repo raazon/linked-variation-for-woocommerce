@@ -67,3 +67,28 @@ function lvfw_get_source_taxonomy() {
 }
 
 add_action( 'wp_ajax_lvfw_get_source_taxonomy', 'lvfw_get_source_taxonomy' );
+
+
+function lvfw_get_new_variation() {
+	$key = isset($_REQUEST['key']) ? esc_attr($_REQUEST['key']) : '';
+
+	// Get product attributes
+	$product_attributes = wc_get_attribute_taxonomies();
+
+	// Output the new variation form
+	ob_start();
+	include LVFW_INCLUDE_PATH . 'admin/new-variation.php';
+	$output = ob_get_clean();
+
+	// Return the output
+	echo wp_json_encode(
+		[
+			'key' => $key+1,
+			'output' => $output,
+		]
+	);
+
+	wp_die(); // Required to terminate AJAX calls properly
+}
+
+add_action( 'wp_ajax_lvfw_get_new_variation', 'lvfw_get_new_variation' );

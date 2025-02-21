@@ -25,36 +25,6 @@ if ( empty( $linked_variations ) ) {
 			'tags'			=> array(),
 			'attributes'	=> array(),
 		),
-		// array(
-		// 	'source'		=> 'products',
-		// 	'products'		=> array( 31, 32 ),
-		// 	'categories'	=> array(),
-		// 	'tags'			=> array(),
-		// 	'attributes'	=> array(
-		// 		[
-		// 			'color' => true,
-		// 			'show_images' => true,
-		// 		],
-		// 		[
-		// 			'size' => true,
-		// 			'show_images' => true,
-		// 		]
-		// 	),
-		// ),
-		// array(
-		// 	'source'		=> 'categories',
-		// 	'products'		=> array(),
-		// 	'categories'	=> array(16, 17),
-		// 	'tags'			=> array(),
-		// 	'attributes'	=> array(),
-		// ),
-		// array(
-		// 	'source'		=> 'tags',
-		// 	'products'		=> array(),
-		// 	'categories'	=> array(),
-		// 	'tags'			=> array(19, 20),
-		// 	'attributes'	=> array(),
-		// ),
 	);
 }
 
@@ -172,6 +142,10 @@ $product_attributes = wc_get_attribute_taxonomies();
 					</div>
 				</div>
 			</div>
+
+			<?php if($key !== 0) : ?>
+				<div class="remove-variation">Remove</div>
+			<?php endif; ?>
 		</div>
 	<?php endforeach; ?>
 </div>

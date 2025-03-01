@@ -92,6 +92,13 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 			];
 		}
 
+		// make all product, categories, tags integer
+		foreach ($linked_variations as $key => $variation) {
+			$linked_variations[$key]['products'] = array_map('intval', $variation['products']);
+			$linked_variations[$key]['categories'] = array_map('intval', $variation['categories']);
+			$linked_variations[$key]['tags'] = array_map('intval', $variation['tags']);
+		}
+
 		// Update the post meta with the structured data
 		update_post_meta($post_id, 'linked_variations', $linked_variations);
 	}

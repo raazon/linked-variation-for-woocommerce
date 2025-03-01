@@ -267,8 +267,11 @@ final class WooLinkedVariation {
 	 * @since 2.0.0
 	 */
 	private function includes() {
-		// Include required files.
+		// Include required admin files.
 		require_once LVFW_INCLUDE_PATH . 'admin/loader.php';
+
+		// Include required frontend files.
+		require_once LVFW_INCLUDE_PATH . 'frontend/loader.php';
 	}
 }
 

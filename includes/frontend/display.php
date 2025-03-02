@@ -19,14 +19,77 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?');
 function lvfw_display_linked_variation()
 {
 	// Get the current product ID
-	$current_product_id = get_the_ID();
-	$linked_variation_post_id = lvfw_find_linked_variation_post($current_product_id);
+	$product_id = get_the_ID();
+	$product = wc_get_product($product_id);
+	$linked_variations = lvfw_find_linked_variation_post($product_id);
 
-	echo '<pre>';
-	var_dump($linked_variation_post_id);
-	echo '</pre>';
+	if (empty($linked_variations)) {
+		return;
+	}
 
-	echo 'Hello...';
+	$source = $linked_variations['source'] ?? 'products';
+	$products = $linked_variations['products'] ?? [];
+
+	// Include the current product in filtering
+	$products[] = $product_id;
+
+	// Get product attributes dynamically
+	$product_attributes = $product->get_attributes();
+	$product_attributes_keys = array_keys($product_attributes);
+
+	if (empty($product_attributes_keys)) {
+		return; // No attributes found
+	}
+
+	// Store the current product's attribute values
+	$current_attributes = [];
+	foreach ($product_attributes_keys as $attribute_key) {
+		$current_attributes[$attribute_key] = $product->get_attribute($attribute_key);
+	}
+
+	$variations = [];
+
+	// Loop through all linked products and store variations
+	foreach ($products as $variation_id) {
+		$variation_product = wc_get_product($variation_id);
+		if (!$variation_product) {
+			continue;
+		}
+
+		$variation_data = [];
+		foreach ($product_attributes_keys as $attribute_key) {
+			$variation_data[$attribute_key] = $variation_product->get_attribute($attribute_key);
+		}
+
+		$variations[$variation_id] = $variation_data;
+	}
+
+	// Prepare filtered variations dynamically
+	$filtered_variations = [];
+
+	foreach ($product_attributes_keys as $attribute_key) {
+		$filtered_variations[$attribute_key] = [];
+
+		foreach ($variations as $variation_id => $variation_data) {
+			// Ensure the same values for all other attributes except the current one
+			$is_valid = true;
+			foreach ($product_attributes_keys as $other_key) {
+				if ($other_key !== $attribute_key && $variation_data[$other_key] !== $current_attributes[$other_key]) {
+					$is_valid = false;
+					break;
+				}
+			}
+
+			if ($is_valid) {
+				$filtered_variations[$attribute_key][$variation_data[$attribute_key]] = $variation_id;
+			}
+		}
+	}
+
+	// Display the filtered variations
+	if($filtered_variations) {
+		require_once LVFW_INCLUDE_PATH . 'frontend/output.php';
+	}
 }
 
 add_action('woocommerce_before_add_to_cart_form', 'lvfw_display_linked_variation', 10, 0);
@@ -69,24 +132,24 @@ function lvfw_find_linked_variation_post($current_product_id)
 		}
 
 		foreach ($linked_variations as $variation) {
-			$source = $variation['source'] ?? '';
+			$source = $variation['source'] ?? 'products';
 
 			// Check if the product exists in 'products' source
 			if ($source === 'products' && in_array($current_product_id, $variation['products'] ?? [], true)) {
-				return $post_id; // Found matching woolinkedvariation post
+				return $variation; // Found matching woolinkedvariation post
 			}
 
 			// Check if the product's category exists in 'categories' source
 			if ($source === 'categories' && !empty($variation['categories'])) {
 				if (array_intersect($product_categories, $variation['categories'])) {
-					return $post_id;
+					return $variation;
 				}
 			}
 
 			// Check if the product's tag exists in 'tags' source
 			if ($source === 'tags' && !empty($variation['tags'])) {
 				if (array_intersect($product_tags, $variation['tags'])) {
-					return $post_id;
+					return $variation;
 				}
 			}
 		}

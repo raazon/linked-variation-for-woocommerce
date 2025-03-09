@@ -29,6 +29,9 @@ function lvfw_display_linked_variation()
 
 	$source = $linked_variations['source'] ?? 'products';
 	$products = $linked_variations['products'] ?? [];
+	
+	$linked_attributes = $linked_variations['attributes'] ?? [];
+	$link_images     = isset( $link_data['images'] ) ? $link_data['images'] : array();
 
 	// Include the current product in filtering
 	$products[] = $product_id;

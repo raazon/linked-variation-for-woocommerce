@@ -27,3 +27,16 @@ function lvfw_should_show_images($attribute_key, $linked_variations)
 
 	return false;
 }
+
+function lvfw_display_variation($show_images, $product_id, $value)
+{
+	if ($show_images) {
+		echo sprintf(
+			'<img src="%s" alt="%s">',
+			esc_url(get_the_post_thumbnail_url($product_id), 'post-thumbnail'),
+			esc_attr($value)
+		);
+	} else {
+		echo esc_html($value);
+	}
+}

@@ -21,22 +21,27 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly
 		<div class="lvfw-attribute">
 			<strong><?php echo esc_html($label); ?></strong>
 			<ul class="lvfw-attribute-options">
-				<?php foreach ($options as $value => $variation_id) : ?>
-					<li data-title="<?php echo esc_attr($value); ?>">
-						<?php if ($value === $current_attributes[$attribute_key]) : ?>
-							<span class="lvfw-selected"><?php echo esc_html($value); ?></span>
+				<?php foreach ($options as $value => $product_id) : ?>
+					<?php
+					// Get is selected
+					$current = $value === $current_attributes[$attribute_key];
+					$attribute_class = 'lvfw-product';
+					if($current) {
+						$attribute_class .= ' active';
+					}
+
+					if($show_images) {
+						$attribute_class .= ' lvfw-show-images';
+					}
+					?>
+					<li class="<?php echo esc_attr($attribute_class); ?>" data-title="<?php echo esc_attr($value); ?>">
+						<?php if ($current) : ?>
+							<span class="lvfw-selected">
+								<?php lvfw_display_variation($show_images, $product_id, $value); ?>
+							</span>
 						<?php else : ?>
-							<a href="<?php echo esc_url(get_permalink($variation_id)); ?>">
-								<?php
-								if ($show_images) {
-									$variation_product = wc_get_product($variation_id);
-									$image_id = $variation_product->get_image_id();
-									$image = wp_get_attachment_image($image_id, 'thumbnail');
-									echo wp_kses_post($image);
-								} else {
-									echo esc_html($value);
-								}
-								?>
+							<a href="<?php echo esc_url(get_permalink($product_id)); ?>">
+								<?php lvfw_display_variation($show_images, $product_id, $value); ?>
 							</a>
 						<?php endif; ?>
 					</li>
@@ -45,3 +50,51 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly
 		</div>
 	<?php endforeach; ?>
 </div>
+
+<style>
+	.lvfw-attributes {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.lvfw-attribute strong {
+		display: block;
+	}
+
+	.lvfw-attribute ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.lvfw-attribute ul li {
+		display: inline-block;
+		border: 1px solid #dddddd;
+		padding: 4px;
+		transition: border-color 0.3s;
+		min-width: 50px;
+	}
+
+	.lvfw-attribute ul li.active,
+	.lvfw-attribute ul li:hover {
+		border-color: #017d01;
+	}
+
+	.lvfw-attribute ul li :is(a, span) {
+		display: block;
+		background: #efefef;
+	}
+
+	.lvfw-attribute ul li:not(.lvfw-show-images) :is(a, span) {
+		padding: 0 4px;
+	}
+
+	.lvfw-attribute ul li img {
+		width: 50px;
+		height: 50px;
+	}
+</style>

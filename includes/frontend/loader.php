@@ -8,4 +8,5 @@
 
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
+require_once LVFW_INCLUDE_PATH . 'frontend/helpers.php';
 require_once LVFW_INCLUDE_PATH . 'frontend/display.php';

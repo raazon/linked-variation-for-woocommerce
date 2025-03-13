@@ -17,11 +17,7 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly
 		<div class="lvfw-attribute">
 			<strong><?php echo esc_html($label); ?></strong>
 			<ul class="lvfw-attribute-options">
-				<?php foreach ($options as $value => $variation_id) : 
-					echo '<pre>';
-					var_dump($linked_variations);
-					echo '</pre>';
-					?>
+				<?php foreach ($options as $value => $variation_id) : ?>
 					<li>
 						<?php if ($value === $current_attributes[$attribute_key]) : ?>
 							<span class="lvfw-selected"><?php echo esc_html($value); ?></span>

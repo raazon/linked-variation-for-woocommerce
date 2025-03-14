@@ -19,18 +19,18 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly
 		$show_images = lvfw_should_show_images($attribute_key, $linked_variations);
 		?>
 		<div class="lvfw-attribute">
-			<strong><?php echo esc_html($label); ?></strong>
+			<span><?php echo esc_html($label); ?></span>
 			<ul class="lvfw-attribute-options">
 				<?php foreach ($options as $value => $product_id) : ?>
 					<?php
 					// Get is selected
 					$current = $value === $current_attributes[$attribute_key];
 					$attribute_class = 'lvfw-product';
-					if($current) {
+					if ($current) {
 						$attribute_class .= ' active';
 					}
 
-					if($show_images) {
+					if ($show_images) {
 						$attribute_class .= ' lvfw-show-images';
 					}
 					?>
@@ -53,12 +53,35 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly
 
 <style>
 	.lvfw-attributes {
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
+		/* attributes wrapper */
+		--lvfw-attrs-gap: 20px;
+		--lvfw-attr-gap: 10px;
+
+		/* attribute items */
+		--lvfw-attr-min-width: 50px;
+		--lvfw-attr-border-width: 1px;
+		--lvfw-attr-border-style: solid;
+		--lvfw-attr-border-color: #dddddd;
+		--lvfw-attr-border-hover-color: #017d01;
+		--lvfw-attr-border: var(--lvfw-attr-border-width) var(--lvfw-attr-border-style) var(--lvfw-attr-border-color);
+		--lvfw-attr-padding: 4px;
+
+		/* attribute items inner */
+		--lvfw-attr-inner-bg: #efefef;
+		--lvfw-attr-inner-padding: 0 4px;
+
+		/* attribute image */
+		--lvfw-attr-image-width: 50px;
+		--lvfw-attr-image-height: 50px;
 	}
 
-	.lvfw-attribute strong {
+	.lvfw-attributes {
+		display: flex;
+		flex-direction: column;
+		gap: var(--lvfw-attrs-gap);
+	}
+
+	.lvfw-attribute>span {
 		display: block;
 	}
 
@@ -68,33 +91,38 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly
 		list-style: none;
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: var(--lvfw-attr-gap);
 	}
 
 	.lvfw-attribute ul li {
 		display: inline-block;
-		border: 1px solid #dddddd;
-		padding: 4px;
+		border: var(--lvfw-attr-border);
+		padding: var(--lvfw-attr-padding);
 		transition: border-color 0.3s;
-		min-width: 50px;
+		min-width: var(--lvfw-attr-min-width);
 	}
 
 	.lvfw-attribute ul li.active,
 	.lvfw-attribute ul li:hover {
-		border-color: #017d01;
+		border-color: var(--lvfw-attr-border-hover-color);
 	}
 
 	.lvfw-attribute ul li :is(a, span) {
 		display: block;
-		background: #efefef;
+		background: var(--lvfw-attr-inner-bg);
 	}
 
 	.lvfw-attribute ul li:not(.lvfw-show-images) :is(a, span) {
-		padding: 0 4px;
+		padding: var(--lvfw-attr-inner-padding);
+	}
+
+	/* reset css */
+	.lvfw-attribute ul li a:focus {
+		outline: none;
 	}
 
 	.lvfw-attribute ul li img {
-		width: 50px;
-		height: 50px;
+		width: var(--lvfw-attr-image-width);
+		height: var(--lvfw-attr-image-height);
 	}
 </style>

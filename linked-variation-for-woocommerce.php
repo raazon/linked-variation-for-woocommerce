@@ -285,7 +285,8 @@ final class WooLinkedVariation
 		}
 
 		// Upgrade the plugin.
-		if (get_transient('lvfw_migrated')) {
+		// Todo: Remove this check in the next major release.
+		if (!get_transient('lvfw_migrated')) {
 			require_once LVFW_INCLUDE_PATH . 'upgrade.php';
 		}
 

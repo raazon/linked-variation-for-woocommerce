@@ -16,10 +16,6 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?');
  */
 function lvfw_migrate_old_data($upgrader_object, $options)
 {
-	if (get_transient('lvfw_migrated')) {
-		return;
-	}
-
 	$our_plugin = 'linked-variation-for-woocommerce/linked-variation-for-woocommerce.php';
 	if (!empty($options['plugins']) && $options['action'] == 'update' && $options['type'] == 'plugin') {
 		foreach ($options['plugins'] as $plugin) {

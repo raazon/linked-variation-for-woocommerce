@@ -1,8 +1,29 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * AJAX functions for the admin area.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
 
-// Customize the callback to your liking.
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+
+/**
+ * Handles the AJAX request to retrieve product attributes.
+ *
+ * This function processes the AJAX request, sanitizes the input variables,
+ * verifies the nonce, and then outputs the product attributes.
+ *
+ * @return void Outputs a JSON response with the product attributes.
+ */
 function lvfw_get_source_products() {
-	$search_term = isset( $_REQUEST['search'] ) ? esc_attr( $_REQUEST['search'] ) : '';
+	$search_term = isset( $_REQUEST['search'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search'] ) ) : '';
+	$nonce       = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ) : '';
+
+	// Verify the nonce.
+	if ( ! wp_verify_nonce( $nonce, 'lvfw_products_nonce_action' ) ) {
+		wp_die( 'Invalid nonce' );
+	}
 
 	// Query WooCommerce products.
 	$args = array(
@@ -38,10 +59,23 @@ function lvfw_get_source_products() {
 
 add_action( 'wp_ajax_lvfw_get_source_products', 'lvfw_get_source_products' );
 
-// Customize the callback to your liking.
+/**
+ * Handles the AJAX request to retrieve product categories or tags.
+ *
+ * This function processes the AJAX request, sanitizes the input variables,
+ * verifies the nonce, and then outputs the product categories or tags.
+ *
+ * @return void Outputs a JSON response with the product categories or tags.
+ */
 function lvfw_get_source_taxonomy() {
-	$taxonomy    = isset( $_REQUEST['taxonomy'] ) ? esc_attr( $_REQUEST['taxonomy'] ) : '';
-	$search_term = isset( $_REQUEST['search'] ) ? esc_attr( $_REQUEST['search'] ) : '';
+	$taxonomy    = isset( $_REQUEST['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['taxonomy'] ) ) : '';
+	$search_term = isset( $_REQUEST['search'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['search'] ) ) : '';
+	$nonce       = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ) : '';
+
+	// Verify the nonce.
+	if ( ! wp_verify_nonce( $nonce, 'lvfw_products_nonce_action' ) ) {
+		wp_die( 'Invalid nonce' );
+	}
 
 	// Query WooCommerce products categories taxonomy.
 	$taxonomies = get_terms(

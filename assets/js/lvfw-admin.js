@@ -10,6 +10,7 @@ jQuery(document).ready(function ($) {
 		const $products = $container.find('.products-picker');
 		const $categories = $container.find('.categories-picker');
 		const $tags = $container.find('.tags-picker');
+		const nonce = $container.parents('form').find('input[name="lvfw_products_nonce"]').val();
 
 		// Safely destroy Select2 before hiding
 		if ($products.data('select2')) {
@@ -34,7 +35,7 @@ jQuery(document).ready(function ($) {
 				// data: data,
 				minimumInputLength: 3,
 				ajax: {
-					url: ajaxurl + '?action=lvfw_get_source_products', // Your REST API endpoint
+					url: ajaxurl + `?action=lvfw_get_source_products&nonce=${nonce}`, // Your REST API endpoint
 					dataType: 'json',
 					delay: 250, // Delay in milliseconds to avoid excessive API calls
 					data: function (params) {
@@ -61,7 +62,7 @@ jQuery(document).ready(function ($) {
 				// data: data,
 				minimumInputLength: 3,
 				ajax: {
-					url: ajaxurl + '?action=lvfw_get_source_taxonomy&taxonomy=product_cat', // Your REST API endpoint
+					url: ajaxurl + `?action=lvfw_get_source_taxonomy&taxonomy=product_cat&nonce=${nonce}`, // Your REST API endpoint
 					dataType: 'json',
 					delay: 250, // Delay in milliseconds to avoid excessive API calls
 					data: function (params) {
@@ -88,7 +89,7 @@ jQuery(document).ready(function ($) {
 				// data: data,
 				minimumInputLength: 3,
 				ajax: {
-					url: ajaxurl + '?action=lvfw_get_source_taxonomy&taxonomy=product_tag', // Your REST API endpoint
+					url: ajaxurl + `?action=lvfw_get_source_taxonomy&taxonomy=product_tag&nonce=${nonce}`, // Your REST API endpoint
 					dataType: 'json',
 					delay: 250, // Delay in milliseconds to avoid excessive API calls
 					data: function (params) {
@@ -144,7 +145,8 @@ jQuery(document).ready(function ($) {
 			type: 'GET',
 			data: {
 				action: 'lvfw_get_new_variation',
-				key: variations_key
+				key: variations_key,
+				nonce: thisElm.parents('form').find('input[name="lvfw_products_nonce"]').val()
 			},
 			success: function (response) {
 				var obj = JSON.parse(response);

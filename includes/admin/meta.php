@@ -13,7 +13,7 @@ function lvfw_cpt_meta_box( $post_type ) {
 			'high'
 		);
 
-		// thank you
+		// thank you.
 		add_meta_box(
 			'thank-you',
 			esc_html__( 'Thank You!', 'linked-variation-for-woocommerce' ),
@@ -69,19 +69,19 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 
 	/* OK, it's safe for us to save the data now. */
 
-	// Get the data from $_POST
+	// Get the data from $_POST.
 	$sources    = isset( $_POST['source'] ) ? (array) $_POST['source'] : array();
 	$products   = isset( $_POST['products'] ) ? (array) $_POST['products'] : array();
 	$categories = isset( $_POST['categories'] ) ? (array) $_POST['categories'] : array();
 	$tags       = isset( $_POST['tags'] ) ? (array) $_POST['tags'] : array();
 	$attributes = isset( $_POST['attributes'] ) ? (array) $_POST['attributes'] : array();
 
-	// Check if the data is available in $_POST
+	// Check if the data is available in $_POST.
 	if ( ! empty( $sources ) ) {
-		// Initialize an empty array to store the variations
+		// Initialize an empty array to store the variations.
 		$linked_variations = array();
 
-		// Loop through each source and build the desired structure
+		// Loop through each source and build the desired structure.
 		foreach ( $sources as $index => $source ) {
 			$linked_variations[ $index ] = array(
 				'source'     => $source,
@@ -92,37 +92,16 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 			);
 		}
 
-		// make all product, categories, tags integer
+		// make all product, categories, tags integer.
 		foreach ( $linked_variations as $key => $variation ) {
 			$linked_variations[ $key ]['products']   = array_map( 'intval', $variation['products'] );
 			$linked_variations[ $key ]['categories'] = array_map( 'intval', $variation['categories'] );
 			$linked_variations[ $key ]['tags']       = array_map( 'intval', $variation['tags'] );
 		}
 
-		// Update the post meta with the structured data
+		// Update the post meta with the structured data.
 		update_post_meta( $post_id, 'linked_variations', $linked_variations );
 	}
-
-	// save attribute meta
-	// if ( isset( $_POST['_linked_by_attributes'] ) ) {
-	// update_post_meta( $post_id, '_linked_by_attributes', array_filter( $_POST['_linked_by_attributes'], 'intval' ) );
-	// } else {
-	// update_post_meta( $post_id, '_linked_by_attributes', array() );
-	// }
-
-	// save show image meta
-	// if ( isset( $_POST['show_images'] ) ) {
-	// update_post_meta( $post_id, 'show_images', array_filter( $_POST['show_images'], 'intval' ) );
-	// } else {
-	// update_post_meta( $post_id, 'show_images', array() );
-	// }
-
-	// save is primary meta
-	// if ( isset( $_POST['is_primary'] ) ) {
-	// update_post_meta( $post_id, 'is_primary', array_filter( $_POST['is_primary'], 'intval' ) );
-	// } else {
-	// update_post_meta( $post_id, 'is_primary', array() );
-	// }
 }
 
 add_action( 'save_post', 'lvfw_save_post_hook', 10, 3 );

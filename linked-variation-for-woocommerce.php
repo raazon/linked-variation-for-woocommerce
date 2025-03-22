@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name:       Linked Variation for WooCommerce
  * Plugin URI:        https://raazon.com/
@@ -271,7 +270,7 @@ final class WooLinkedVariation {
 	private function includes() {
 		// Check if WooCommerce is active.
 		$active_plugins = get_option( 'active_plugins' );
-		if ( ! in_array( 'woocommerce/woocommerce.php', $active_plugins ) ) {
+		if ( ! in_array( 'woocommerce/woocommerce.php', $active_plugins, true ) ) {
 			return;
 		}
 

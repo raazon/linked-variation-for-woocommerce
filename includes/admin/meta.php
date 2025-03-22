@@ -43,18 +43,20 @@ add_action( 'add_meta_boxes', 'lvfw_cpt_meta_box', 10, 1 );
 /**
  * Linked Variations Meta Box.
  *
+ * @param object $post The post object.
  * @return void
  */
-function lvfw_cpt_meta_box_linked_variations() {
+function lvfw_cpt_meta_box_linked_variations( $post ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	require_once LVFW_INCLUDE_PATH . 'admin/output.php';
 }
 
 /**
  * Thank You Meta Box Content.
  *
+ * @param object $post The post object.
  * @return void
  */
-function lvfw_cpt_meta_box_content_thank_you() {
+function lvfw_cpt_meta_box_content_thank_you( $post ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	printf(
 		'<p> %1$s <a href="https://wordpress.org/support/plugin/linked-variation-for-woocommerce/reviews/?filter=5" target="_blank">%2$s</a></p> <p>%3$s</p>',
 		esc_html__( 'Thank you for using our plugin. If you like our plugin please', 'linked-variation-for-woocommerce' ),

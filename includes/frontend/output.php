@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Frontend output for linked variations.
  *
@@ -13,9 +12,9 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages dire
 <div class="lvfw-attributes">
 	<?php foreach ( $filtered_variations as $attribute_key => $options ) : ?>
 		<?php
-		// Get a readable label
+		// Get a readable label.
 		$label = wc_attribute_label( $attribute_key );
-		// Check if images should be shown
+		// Check if images should be shown.
 		$show_images = lvfw_should_show_images( $attribute_key, $linked_variations );
 		?>
 		<div class="lvfw-attribute">
@@ -23,7 +22,7 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages dire
 			<ul class="lvfw-attribute-options">
 				<?php foreach ( $options as $value => $product_id ) : ?>
 					<?php
-					// Get is selected
+					// Get is selected.
 					$current         = $value === $current_attributes[ $attribute_key ];
 					$attribute_class = 'lvfw-product';
 					if ( $current ) {

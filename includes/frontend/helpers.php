@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Load helpers files.
  *
@@ -9,6 +8,16 @@
 
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
 
+/**
+ * Determines whether images should be shown for a specific attribute key
+ * within the linked variations.
+ *
+ * @param string $attribute_key The key of the attribute to check.
+ * @param array  $linked_variations The linked variations data, which should
+ * include an 'attributes' key containing an array of attribute data.
+ *
+ * @return bool True if images should be shown for the specified attribute key, false otherwise.
+ */
 function lvfw_should_show_images( $attribute_key, $linked_variations ) {
 	if ( ! isset( $linked_variations['attributes'] ) ) {
 		return false;

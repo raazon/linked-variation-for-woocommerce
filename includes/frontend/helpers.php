@@ -27,7 +27,7 @@ function lvfw_should_show_images( $attribute_key, $linked_variations ) {
 		if (
 			$attribute['name'] === $attribute_key &&
 			isset( $attribute['show_images'] ) &&
-			$attribute['show_images'] === '1'
+			'1' === $attribute['show_images']
 		) {
 			return true;
 		}
@@ -36,6 +36,15 @@ function lvfw_should_show_images( $attribute_key, $linked_variations ) {
 	return false;
 }
 
+/**
+ * Displays a variation of a product, either as an image or as plain text.
+ *
+ * @param bool   $show_images Whether to display the variation as an image. If true, an image is displayed; otherwise, plain text is shown.
+ * @param int    $product_id  The ID of the product whose variation is being displayed.
+ * @param string $value       The value of the variation to display (e.g., variation name or description).
+ *
+ * @return void
+ */
 function lvfw_display_variation( $show_images, $product_id, $value ) {
 	if ( $show_images ) {
 		printf(

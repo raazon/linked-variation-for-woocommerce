@@ -58,7 +58,7 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 	/*
 	* If post type is not woolinkedvariation.
 	*/
-	if('woolinkedvariation' !== get_post_type($post_id)) {
+	if ( 'woolinkedvariation' !== get_post_type( $post_id ) ) {
 		return;
 	}
 
@@ -70,58 +70,58 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 	/* OK, it's safe for us to save the data now. */
 
 	// Get the data from $_POST
-	$sources     = isset( $_POST['source'] ) ? (array) $_POST['source'] : [];
-	$products    = isset( $_POST['products'] ) ? (array) $_POST['products'] : [];
-	$categories  = isset( $_POST['categories'] ) ? (array) $_POST['categories'] : [];
-	$tags        = isset( $_POST['tags'] ) ? (array) $_POST['tags'] : [];
-	$attributes  = isset( $_POST['attributes'] ) ? (array) $_POST['attributes'] : [];
+	$sources    = isset( $_POST['source'] ) ? (array) $_POST['source'] : array();
+	$products   = isset( $_POST['products'] ) ? (array) $_POST['products'] : array();
+	$categories = isset( $_POST['categories'] ) ? (array) $_POST['categories'] : array();
+	$tags       = isset( $_POST['tags'] ) ? (array) $_POST['tags'] : array();
+	$attributes = isset( $_POST['attributes'] ) ? (array) $_POST['attributes'] : array();
 
 	// Check if the data is available in $_POST
-	if ( !empty($sources) ) {
+	if ( ! empty( $sources ) ) {
 		// Initialize an empty array to store the variations
-		$linked_variations = [];
+		$linked_variations = array();
 
 		// Loop through each source and build the desired structure
-		foreach ($sources as $index => $source) {
-			$linked_variations[$index] = [
-				'source' => $source,
-				'products' => ($source === 'products' && isset($products[$index])) ? $products[$index] : [],
-				'categories' => ($source === 'categories' && isset($categories[$index])) ? $categories[$index] : [],
-				'tags' => ($source === 'tags' && isset($tags[$index])) ? $tags[$index] : [],
-				'attributes' => isset($attributes[$index]) ? $attributes[$index] : [],
-			];
+		foreach ( $sources as $index => $source ) {
+			$linked_variations[ $index ] = array(
+				'source'     => $source,
+				'products'   => ( $source === 'products' && isset( $products[ $index ] ) ) ? $products[ $index ] : array(),
+				'categories' => ( $source === 'categories' && isset( $categories[ $index ] ) ) ? $categories[ $index ] : array(),
+				'tags'       => ( $source === 'tags' && isset( $tags[ $index ] ) ) ? $tags[ $index ] : array(),
+				'attributes' => isset( $attributes[ $index ] ) ? $attributes[ $index ] : array(),
+			);
 		}
 
 		// make all product, categories, tags integer
-		foreach ($linked_variations as $key => $variation) {
-			$linked_variations[$key]['products'] = array_map('intval', $variation['products']);
-			$linked_variations[$key]['categories'] = array_map('intval', $variation['categories']);
-			$linked_variations[$key]['tags'] = array_map('intval', $variation['tags']);
+		foreach ( $linked_variations as $key => $variation ) {
+			$linked_variations[ $key ]['products']   = array_map( 'intval', $variation['products'] );
+			$linked_variations[ $key ]['categories'] = array_map( 'intval', $variation['categories'] );
+			$linked_variations[ $key ]['tags']       = array_map( 'intval', $variation['tags'] );
 		}
 
 		// Update the post meta with the structured data
-		update_post_meta($post_id, 'linked_variations', $linked_variations);
+		update_post_meta( $post_id, 'linked_variations', $linked_variations );
 	}
 
 	// save attribute meta
 	// if ( isset( $_POST['_linked_by_attributes'] ) ) {
-	// 	update_post_meta( $post_id, '_linked_by_attributes', array_filter( $_POST['_linked_by_attributes'], 'intval' ) );
+	// update_post_meta( $post_id, '_linked_by_attributes', array_filter( $_POST['_linked_by_attributes'], 'intval' ) );
 	// } else {
-	// 	update_post_meta( $post_id, '_linked_by_attributes', array() );
+	// update_post_meta( $post_id, '_linked_by_attributes', array() );
 	// }
 
 	// save show image meta
 	// if ( isset( $_POST['show_images'] ) ) {
-	// 	update_post_meta( $post_id, 'show_images', array_filter( $_POST['show_images'], 'intval' ) );
+	// update_post_meta( $post_id, 'show_images', array_filter( $_POST['show_images'], 'intval' ) );
 	// } else {
-	// 	update_post_meta( $post_id, 'show_images', array() );
+	// update_post_meta( $post_id, 'show_images', array() );
 	// }
 
 	// save is primary meta
 	// if ( isset( $_POST['is_primary'] ) ) {
-	// 	update_post_meta( $post_id, 'is_primary', array_filter( $_POST['is_primary'], 'intval' ) );
+	// update_post_meta( $post_id, 'is_primary', array_filter( $_POST['is_primary'], 'intval' ) );
 	// } else {
-	// 	update_post_meta( $post_id, 'is_primary', array() );
+	// update_post_meta( $post_id, 'is_primary', array() );
 	// }
 }
 

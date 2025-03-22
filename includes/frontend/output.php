@@ -7,41 +7,41 @@
  * @since 2.0.0
  */
 
-defined('ABSPATH') || die('Cheatin&#8217; uh?'); // Cannot access pages directly.
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
 ?>
 
 <div class="lvfw-attributes">
-	<?php foreach ($filtered_variations as $attribute_key => $options) : ?>
+	<?php foreach ( $filtered_variations as $attribute_key => $options ) : ?>
 		<?php
 		// Get a readable label
-		$label = wc_attribute_label($attribute_key);
+		$label = wc_attribute_label( $attribute_key );
 		// Check if images should be shown
-		$show_images = lvfw_should_show_images($attribute_key, $linked_variations);
+		$show_images = lvfw_should_show_images( $attribute_key, $linked_variations );
 		?>
 		<div class="lvfw-attribute">
-			<span><?php echo esc_html($label); ?></span>
+			<span><?php echo esc_html( $label ); ?></span>
 			<ul class="lvfw-attribute-options">
-				<?php foreach ($options as $value => $product_id) : ?>
+				<?php foreach ( $options as $value => $product_id ) : ?>
 					<?php
 					// Get is selected
-					$current = $value === $current_attributes[$attribute_key];
+					$current         = $value === $current_attributes[ $attribute_key ];
 					$attribute_class = 'lvfw-product';
-					if ($current) {
+					if ( $current ) {
 						$attribute_class .= ' active';
 					}
 
-					if ($show_images) {
+					if ( $show_images ) {
 						$attribute_class .= ' lvfw-show-images';
 					}
 					?>
-					<li class="<?php echo esc_attr($attribute_class); ?>" data-title="<?php echo esc_attr($value); ?>">
-						<?php if ($current) : ?>
+					<li class="<?php echo esc_attr( $attribute_class ); ?>" data-title="<?php echo esc_attr( $value ); ?>">
+						<?php if ( $current ) : ?>
 							<span class="lvfw-selected">
-								<?php lvfw_display_variation($show_images, $product_id, $value); ?>
+								<?php lvfw_display_variation( $show_images, $product_id, $value ); ?>
 							</span>
 						<?php else : ?>
-							<a href="<?php echo esc_url(get_permalink($product_id)); ?>">
-								<?php lvfw_display_variation($show_images, $product_id, $value); ?>
+							<a href="<?php echo esc_url( get_permalink( $product_id ) ); ?>">
+								<?php lvfw_display_variation( $show_images, $product_id, $value ); ?>
 							</a>
 						<?php endif; ?>
 					</li>

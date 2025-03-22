@@ -47,10 +47,10 @@ function lvfw_admin_enqueue_scripts() {
 				'lvfw_ajax_object',
 				array(
 					'ajaxurl'              => admin_url( 'admin-ajax.php' ),
-					'product_placeholder'  => esc_html( 'Select products...', 'linked-variation-for-woocommerce' ),
-					'category_placeholder' => esc_html( 'Select categories...', 'linked-variation-for-woocommerce' ),
-					'tag_placeholder'      => esc_html( 'Select tags...', 'linked-variation-for-woocommerce' ),
-					'confirm_message'      => esc_html( 'Are you sure you want to delete this variation?', 'linked-variation-for-woocommerce' ),
+					'product_placeholder'  => esc_html__( 'Select products...', 'linked-variation-for-woocommerce' ),
+					'category_placeholder' => esc_html__( 'Select categories...', 'linked-variation-for-woocommerce' ),
+					'tag_placeholder'      => esc_html__( 'Select tags...', 'linked-variation-for-woocommerce' ),
+					'confirm_message'      => esc_html__( 'Are you sure you want to delete this variation?', 'linked-variation-for-woocommerce' ),
 				)
 			);
 			wp_enqueue_style(

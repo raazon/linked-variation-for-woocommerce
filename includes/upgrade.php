@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Upgrade functions.
  *
@@ -10,15 +9,25 @@
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
 /**
- * Migrate old data.
+ * Migrates old data for the "Linked Variation for WooCommerce" plugin during plugin updates.
  *
- * @since 2.0.0
+ * This function is hooked to the `upgrader_process_complete` action and is triggered
+ * when the plugin is updated. It retrieves all posts of the custom post type
+ * `woolinkedvariation`, processes their metadata, and updates them to the new format.
+ *
+ * @param WP_Upgrader $upgrader_object The upgrader object.
+ * @param array       $options         An array of options for the upgrade process.
+ *                                     - 'plugins': List of plugins being updated.
+ *                                     - 'action': The type of action being performed (e.g., 'update').
+ *                                     - 'type': The type of update (e.g., 'plugin').
+ *
+ * @return void
  */
 function lvfw_migrate_old_data( $upgrader_object, $options ) {
 	$our_plugin = 'linked-variation-for-woocommerce/linked-variation-for-woocommerce.php';
-	if ( ! empty( $options['plugins'] ) && $options['action'] == 'update' && $options['type'] == 'plugin' ) {
+	if ( ! empty( $options['plugins'] ) && $options['action'] == 'update' && $options['type'] == 'plugin' ) { // phpcs:ignore
 		foreach ( $options['plugins'] as $plugin ) {
-			if ( $plugin == $our_plugin ) {
+			if ( $plugin == $our_plugin ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 				$args = array(
 					'post_type'      => 'woolinkedvariation',
 					'post_status'    => 'publish',
@@ -41,7 +50,7 @@ function lvfw_migrate_old_data( $upgrader_object, $options ) {
 										'name' => wc_get_attribute( $attr )->slug,
 									);
 
-									if ( in_array( $attr, $old_show_images ) ) {
+									if ( in_array( $attr, $old_show_images ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 										$attributes[ $attr ]['show_images'] = '1';
 									}
 								}

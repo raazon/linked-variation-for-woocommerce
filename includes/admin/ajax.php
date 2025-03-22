@@ -70,12 +70,28 @@ function lvfw_get_source_taxonomy() {
 
 add_action( 'wp_ajax_lvfw_get_source_taxonomy', 'lvfw_get_source_taxonomy' );
 
-// Handles the AJAX request to retrieve a new variation form.
+/**
+ * Handles the AJAX request to retrieve a new variation form.
+ *
+ * This function processes the AJAX request, sanitizes the input variables,
+ * verifies the nonce, and then outputs a new variation form for the product.
+ *
+ * @return void Outputs a JSON response with the new variation form and updated key.
+ */
 function lvfw_get_new_variation() {
-	$key = isset( $_REQUEST['key'] ) ? esc_attr( wp_unslash( $_REQUEST['key'] ) ) : '';
+	$key   = isset( $_REQUEST['key'] ) ? absint( $_REQUEST['key'] ) : '';
+	$nonce = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ) : '';
+
+	// Verify the nonce.
+	if ( ! wp_verify_nonce( $nonce, 'lvfw_products_nonce_action' ) ) {
+		wp_die( 'Invalid nonce' );
+	}
 
 	// Get product attributes.
 	$product_attributes = wc_get_attribute_taxonomies();
+
+	// Set the source.
+	$source = 'products';
 
 	// Output the new variation form.
 	ob_start();

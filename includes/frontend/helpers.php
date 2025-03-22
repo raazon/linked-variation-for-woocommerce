@@ -48,7 +48,7 @@ function lvfw_should_show_images( $attribute_key, $linked_variations ) {
 function lvfw_display_variation( $show_images, $product_id, $value ) {
 	if ( $show_images ) {
 		printf(
-			'<img src="%s" alt="%s">',
+			'<img src="%s" alt="%s">', // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
 			esc_url( get_the_post_thumbnail_url( $product_id ), 'post-thumbnail' ),
 			esc_attr( $value )
 		);

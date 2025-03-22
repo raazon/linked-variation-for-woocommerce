@@ -13,8 +13,6 @@ wp_nonce_field( 'lvfw_products_nonce_action', 'lvfw_products_nonce' );
 
 $linked_variations = get_post_meta( $post->ID, 'linked_variations', true );
 
-// delete_post_meta($post->ID, 'linked_variations');
-
 // Check if the retrieved value is valid, otherwise use the default.
 if ( empty( $linked_variations ) ) {
 	$linked_variations = array(
@@ -28,7 +26,7 @@ if ( empty( $linked_variations ) ) {
 	);
 }
 
-// Return if linked variations is empty
+// Return if linked variations is empty.
 if ( empty( $linked_variations ) ) {
 	return;
 }
@@ -37,12 +35,12 @@ $product_attributes = wc_get_attribute_taxonomies();
 ?>
 <div class="linked-variations">
 	<?php
-	foreach ( $linked_variations as $key => $link ) :
-		$source     = isset( $link['source'] ) ? $link['source'] : 'products';
-		$products   = ( 'products' === $source && isset( $link['products'] ) ) ? $link['products'] : array();
-		$categories = ( 'categories' === $source && isset( $link['categories'] ) ) ? $link['categories'] : array();
-		$tags       = ( 'tags' === $source && isset( $link['tags'] ) ) ? $link['tags'] : array();
-		$attributes = isset( $link['attributes'] ) ? $link['attributes'] : array();
+	foreach ( $linked_variations as $key => $variation ) :
+		$source     = isset( $variation['source'] ) ? $variation['source'] : 'products';
+		$products   = ( 'products' === $source && isset( $variation['products'] ) ) ? $variation['products'] : array();
+		$categories = ( 'categories' === $source && isset( $variation['categories'] ) ) ? $variation['categories'] : array();
+		$tags       = ( 'tags' === $source && isset( $variation['tags'] ) ) ? $variation['tags'] : array();
+		$attributes = isset( $variation['attributes'] ) ? $variation['attributes'] : array();
 		?>
 		<div class="linked-variation-item">
 			<div class="linked-variation">
@@ -121,7 +119,7 @@ $product_attributes = wc_get_attribute_taxonomies();
 												esc_attr( $attribute->attribute_id ),
 												esc_attr( $attribute_name ),
 												$checked_name ? checked( $attributes[ $attribute->attribute_id ]['name'], $attribute_name, false ) : '',
-												$attribute->attribute_label,
+												esc_attr( $attribute->attribute_label ),
 											);
 											?>
 										</label>
@@ -147,8 +145,8 @@ $product_attributes = wc_get_attribute_taxonomies();
 				</div>
 			</div>
 
-			<?php if ( $key !== 0 ) : ?>
-				<div class="remove-variation">Remove</div>
+			<?php if ( 0 !== $key ) : ?>
+				<div class="remove-variation"><?php echo esc_html__( 'Remove', 'linked-variation-for-woocommerce' ); ?></div>
 			<?php endif; ?>
 		</div>
 	<?php endforeach; ?>

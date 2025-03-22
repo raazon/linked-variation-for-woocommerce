@@ -43,7 +43,7 @@ function lvfw_migrate_old_data($upgrader_object, $options)
 									);
 
 									if (in_array($attr, $old_show_images)) {
-										$attributes[$attr]['show_image'] = 1;
+										$attributes[$attr]['show_images'] = 1;
 									}
 								}
 							}

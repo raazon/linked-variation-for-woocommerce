@@ -50,10 +50,10 @@ $product_attributes = wc_get_attribute_taxonomies();
 							<option value="products" <?php selected( $source, 'products' ); ?>>
 								<?php echo esc_html__( 'Products', 'linked-variation-for-woocommerce' ); ?>
 							</option>
-							<option value="categories" <?php selected( $source, 'categories' ); ?>>
+							<option value="categories" <?php selected( $source, 'categories' ); ?> disabled>
 								<?php echo esc_html__( 'Categories', 'linked-variation-for-woocommerce' ); ?>
 							</option>
-							<option value="tags" <?php selected( $source, 'tags' ); ?>>
+							<option value="tags" <?php selected( $source, 'tags' ); ?> disabled>
 								<?php echo esc_html__( 'Tags', 'linked-variation-for-woocommerce' ); ?>
 							</option>
 						</select>

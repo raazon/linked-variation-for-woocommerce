@@ -1,5 +1,14 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * New Variation Template.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
+
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
 ?>
+
 <div class="linked-variation-item">
 	<div class="linked-variation">
 		<div class="linked-variation-source">
@@ -59,7 +68,7 @@
 										esc_attr( $attribute->attribute_id ),
 										esc_attr( $attribute_name ),
 										$checked_name ? checked( $attributes[ $attribute->attribute_id ]['name'], $attribute_name, false ) : '',
-										$attribute->attribute_label,
+										esc_attr( $attribute->attribute_label ),
 									);
 									?>
 								</label>

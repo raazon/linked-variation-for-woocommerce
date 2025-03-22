@@ -1,9 +1,22 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * Meta Box for Linked Variations.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
 
-// Adds the meta box woolinkedvariation post type.
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+
+/**
+ * Add meta box for linked variations.
+ *
+ * @param string $post_type The post type.
+ * @return void
+ */
 function lvfw_cpt_meta_box( $post_type ) {
 	$post_types = array( 'woolinkedvariation' );
-	if ( in_array( $post_type, $post_types ) ) {
+	if ( in_array( $post_type, $post_types, true ) ) {
 		add_meta_box(
 			'linkedvariations',
 			esc_html__( 'Linked Variations', 'linked-variation-for-woocommerce' ),
@@ -27,17 +40,26 @@ function lvfw_cpt_meta_box( $post_type ) {
 
 add_action( 'add_meta_boxes', 'lvfw_cpt_meta_box', 10, 1 );
 
-
-function lvfw_cpt_meta_box_linked_variations( $post ) {
+/**
+ * Linked Variations Meta Box.
+ *
+ * @return void
+ */
+function lvfw_cpt_meta_box_linked_variations() {
 	require_once LVFW_INCLUDE_PATH . 'admin/output.php';
 }
 
-function lvfw_cpt_meta_box_content_thank_you( $post ) {
+/**
+ * Thank You Meta Box Content.
+ *
+ * @return void
+ */
+function lvfw_cpt_meta_box_content_thank_you() {
 	printf(
 		'<p> %1$s <a href="https://wordpress.org/support/plugin/linked-variation-for-woocommerce/reviews/?filter=5" target="_blank">%2$s</a></p> <p>%3$s</p>',
-		__( 'Thank you for using our plugin. If you like our plugin please' ),
-		__( 'Rate Us.' ),
-		__( 'Your rating is our inspiration!' )
+		esc_html__( 'Thank you for using our plugin. If you like our plugin please', 'linked-variation-for-woocommerce' ),
+		esc_html__( 'Rate Us.', 'linked-variation-for-woocommerce' ),
+		esc_html__( 'Your rating is our inspiration!', 'linked-variation-for-woocommerce' )
 	);
 }
 
@@ -45,8 +67,10 @@ function lvfw_cpt_meta_box_content_thank_you( $post ) {
  * Save the meta when the post is saved.
  *
  * @param int $post_id The ID of the post being saved.
+ *
+ * @return void
  */
-function lvfw_save_post_hook( $post_id, $post, $update ) {
+function lvfw_save_post_hook( $post_id ) {
 	/*
 	* If this is an autosave, our form has not been submitted,
 	* so we don't want to do anything.
@@ -69,12 +93,28 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 
 	/* OK, it's safe for us to save the data now. */
 
-	// Get the data from $_POST.
-	$sources    = isset( $_POST['source'] ) ? (array) $_POST['source'] : array();
-	$products   = isset( $_POST['products'] ) ? (array) $_POST['products'] : array();
-	$categories = isset( $_POST['categories'] ) ? (array) $_POST['categories'] : array();
-	$tags       = isset( $_POST['tags'] ) ? (array) $_POST['tags'] : array();
-	$attributes = isset( $_POST['attributes'] ) ? (array) $_POST['attributes'] : array();
+	// Check nonce for form validation.
+	$nonce = isset( $_REQUEST['lvfw_products_nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['lvfw_products_nonce'] ) ) : '';
+	if ( ! wp_verify_nonce( $nonce, 'lvfw_products_nonce_action' ) ) {
+		wp_die( 'Invalid nonce or nonce verification failed!' );
+	}
+
+	// Sanitize and unslash the input variables.
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$sources = isset( $_POST['source'] ) ? (array) wp_unslash( $_POST['source'] ) : array();
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$products = isset( $_POST['products'] ) ? (array) wp_unslash( $_POST['products'] ) : array();
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$categories = isset( $_POST['categories'] ) ? (array) wp_unslash( $_POST['categories'] ) : array();
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$tags = isset( $_POST['tags'] ) ? (array) wp_unslash( $_POST['tags'] ) : array();
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$attributes = isset( $_POST['attributes'] ) ? (array) wp_unslash( $_POST['attributes'] ) : array();
 
 	// Check if the data is available in $_POST.
 	if ( ! empty( $sources ) ) {
@@ -85,9 +125,9 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 		foreach ( $sources as $index => $source ) {
 			$linked_variations[ $index ] = array(
 				'source'     => $source,
-				'products'   => ( $source === 'products' && isset( $products[ $index ] ) ) ? $products[ $index ] : array(),
-				'categories' => ( $source === 'categories' && isset( $categories[ $index ] ) ) ? $categories[ $index ] : array(),
-				'tags'       => ( $source === 'tags' && isset( $tags[ $index ] ) ) ? $tags[ $index ] : array(),
+				'products'   => ( 'products' === $source && isset( $products[ $index ] ) ) ? $products[ $index ] : array(),
+				'categories' => ( 'categories' === $source && isset( $categories[ $index ] ) ) ? $categories[ $index ] : array(),
+				'tags'       => ( 'tags' === $source && isset( $tags[ $index ] ) ) ? $tags[ $index ] : array(),
 				'attributes' => isset( $attributes[ $index ] ) ? $attributes[ $index ] : array(),
 			);
 		}
@@ -104,4 +144,4 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 	}
 }
 
-add_action( 'save_post', 'lvfw_save_post_hook', 10, 3 );
+add_action( 'save_post', 'lvfw_save_post_hook', 10 );

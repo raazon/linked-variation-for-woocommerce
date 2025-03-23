@@ -1,0 +1,12 @@
+{
+	"name": "linked-variation-for-woocommerce",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"make-pot": "wp i18n make-pot . languages/linked-variation-for-woocommerce.pot"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": ""
+}

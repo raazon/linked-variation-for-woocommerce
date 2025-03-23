@@ -1,9 +1,22 @@
-<?php defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+<?php
+/**
+ * Meta Box for Linked Variations.
+ *
+ * @package Lvfw
+ * @since 2.0.0
+ */
 
-// Adds the meta box woolinkedvariation post type.
+defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages directly.
+
+/**
+ * Add meta box for linked variations.
+ *
+ * @param string $post_type The post type.
+ * @return void
+ */
 function lvfw_cpt_meta_box( $post_type ) {
 	$post_types = array( 'woolinkedvariation' );
-	if ( in_array( $post_type, $post_types ) ) {
+	if ( in_array( $post_type, $post_types, true ) ) {
 		add_meta_box(
 			'linkedvariations',
 			esc_html__( 'Linked Variations', 'linked-variation-for-woocommerce' ),
@@ -13,7 +26,7 @@ function lvfw_cpt_meta_box( $post_type ) {
 			'high'
 		);
 
-		// thank you
+		// thank you.
 		add_meta_box(
 			'thank-you',
 			esc_html__( 'Thank You!', 'linked-variation-for-woocommerce' ),
@@ -27,17 +40,28 @@ function lvfw_cpt_meta_box( $post_type ) {
 
 add_action( 'add_meta_boxes', 'lvfw_cpt_meta_box', 10, 1 );
 
-
-function lvfw_cpt_meta_box_linked_variations( $post ) {
+/**
+ * Linked Variations Meta Box.
+ *
+ * @param object $post The post object.
+ * @return void
+ */
+function lvfw_cpt_meta_box_linked_variations( $post ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	require_once LVFW_INCLUDE_PATH . 'admin/output.php';
 }
 
-function lvfw_cpt_meta_box_content_thank_you( $post ) {
+/**
+ * Thank You Meta Box Content.
+ *
+ * @param object $post The post object.
+ * @return void
+ */
+function lvfw_cpt_meta_box_content_thank_you( $post ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	printf(
 		'<p> %1$s <a href="https://wordpress.org/support/plugin/linked-variation-for-woocommerce/reviews/?filter=5" target="_blank">%2$s</a></p> <p>%3$s</p>',
-		__( 'Thank you for using our plugin. If you like our plugin please' ),
-		__( 'Rate Us.' ),
-		__( 'Your rating is our inspiration!' )
+		esc_html__( 'Thank you for using our plugin. If you like our plugin please', 'linked-variation-for-woocommerce' ),
+		esc_html__( 'Rate Us.', 'linked-variation-for-woocommerce' ),
+		esc_html__( 'Your rating is our inspiration!', 'linked-variation-for-woocommerce' )
 	);
 }
 
@@ -45,8 +69,10 @@ function lvfw_cpt_meta_box_content_thank_you( $post ) {
  * Save the meta when the post is saved.
  *
  * @param int $post_id The ID of the post being saved.
+ *
+ * @return void
  */
-function lvfw_save_post_hook( $post_id, $post, $update ) {
+function lvfw_save_post_hook( $post_id ) {
 	/*
 	* If this is an autosave, our form has not been submitted,
 	* so we don't want to do anything.
@@ -58,7 +84,7 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 	/*
 	* If post type is not woolinkedvariation.
 	*/
-	if('woolinkedvariation' !== get_post_type($post_id)) {
+	if ( 'woolinkedvariation' !== get_post_type( $post_id ) ) {
 		return;
 	}
 
@@ -69,53 +95,55 @@ function lvfw_save_post_hook( $post_id, $post, $update ) {
 
 	/* OK, it's safe for us to save the data now. */
 
-	// Get the data from $_POST
-	$sources     = isset( $_POST['source'] ) ? (array) $_POST['source'] : [];
-	$products    = isset( $_POST['products'] ) ? (array) $_POST['products'] : [];
-	$categories  = isset( $_POST['categories'] ) ? (array) $_POST['categories'] : [];
-	$tags        = isset( $_POST['tags'] ) ? (array) $_POST['tags'] : [];
-	$attributes  = isset( $_POST['attributes'] ) ? (array) $_POST['attributes'] : [];
-
-	// Check if the data is available in $_POST
-	if ( !empty($sources) ) {
-		// Initialize an empty array to store the variations
-		$linked_variations = [];
-
-		// Loop through each source and build the desired structure
-		foreach ($sources as $index => $source) {
-			$linked_variations[$index] = [
-				'source' => $source,
-				'products' => ($source === 'products' && isset($products[$index])) ? $products[$index] : [],
-				'categories' => ($source === 'categories' && isset($categories[$index])) ? $categories[$index] : [],
-				'tags' => ($source === 'tags' && isset($tags[$index])) ? $tags[$index] : [],
-				'attributes' => isset($attributes[$index]) ? $attributes[$index] : [],
-			];
-		}
-
-		// Update the post meta with the structured data
-		update_post_meta($post_id, 'linked_variations', $linked_variations);
+	// Check nonce for form validation.
+	$nonce = isset( $_REQUEST['lvfw_products_nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['lvfw_products_nonce'] ) ) : '';
+	if ( ! wp_verify_nonce( $nonce, 'lvfw_products_nonce_action' ) ) {
+		wp_die( 'Invalid nonce or nonce verification failed!' );
 	}
 
-	// save attribute meta
-	// if ( isset( $_POST['_linked_by_attributes'] ) ) {
-	// 	update_post_meta( $post_id, '_linked_by_attributes', array_filter( $_POST['_linked_by_attributes'], 'intval' ) );
-	// } else {
-	// 	update_post_meta( $post_id, '_linked_by_attributes', array() );
-	// }
+	// Sanitize and unslash the input variables.
 
-	// save show image meta
-	// if ( isset( $_POST['show_images'] ) ) {
-	// 	update_post_meta( $post_id, 'show_images', array_filter( $_POST['show_images'], 'intval' ) );
-	// } else {
-	// 	update_post_meta( $post_id, 'show_images', array() );
-	// }
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$sources = isset( $_POST['source'] ) ? (array) wp_unslash( $_POST['source'] ) : array();
 
-	// save is primary meta
-	// if ( isset( $_POST['is_primary'] ) ) {
-	// 	update_post_meta( $post_id, 'is_primary', array_filter( $_POST['is_primary'], 'intval' ) );
-	// } else {
-	// 	update_post_meta( $post_id, 'is_primary', array() );
-	// }
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$products = isset( $_POST['products'] ) ? (array) wp_unslash( $_POST['products'] ) : array();
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$categories = isset( $_POST['categories'] ) ? (array) wp_unslash( $_POST['categories'] ) : array();
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$tags = isset( $_POST['tags'] ) ? (array) wp_unslash( $_POST['tags'] ) : array();
+
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$attributes = isset( $_POST['attributes'] ) ? (array) wp_unslash( $_POST['attributes'] ) : array();
+
+	// Check if the data is available in $_POST.
+	if ( ! empty( $sources ) ) {
+		// Initialize an empty array to store the variations.
+		$linked_variations = array();
+
+		// Loop through each source and build the desired structure.
+		foreach ( $sources as $index => $source ) {
+			$linked_variations[ $index ] = array(
+				'source'     => $source,
+				'products'   => ( 'products' === $source && isset( $products[ $index ] ) ) ? $products[ $index ] : array(),
+				'categories' => ( 'categories' === $source && isset( $categories[ $index ] ) ) ? $categories[ $index ] : array(),
+				'tags'       => ( 'tags' === $source && isset( $tags[ $index ] ) ) ? $tags[ $index ] : array(),
+				'attributes' => isset( $attributes[ $index ] ) ? $attributes[ $index ] : array(),
+			);
+		}
+
+		// make all product, categories, tags integer.
+		foreach ( $linked_variations as $key => $variation ) {
+			$linked_variations[ $key ]['products']   = array_map( 'intval', $variation['products'] );
+			$linked_variations[ $key ]['categories'] = array_map( 'intval', $variation['categories'] );
+			$linked_variations[ $key ]['tags']       = array_map( 'intval', $variation['tags'] );
+		}
+
+		// Update the post meta with the structured data.
+		update_post_meta( $post_id, 'linked_variations', $linked_variations );
+	}
 }
 
-add_action( 'save_post', 'lvfw_save_post_hook', 10, 3 );
+add_action( 'save_post', 'lvfw_save_post_hook', 10 );

@@ -25,6 +25,7 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
  * @since 2.0.0
  */
 final class WooLinkedVariation {
+
 	/**
 	 * The single instance of the class.
 	 *
@@ -267,11 +268,25 @@ final class WooLinkedVariation {
 	 * @since 2.0.0
 	 */
 	private function includes() {
-		// Include required files.
+		// Check if WooCommerce is active.
+		$active_plugins = get_option( 'active_plugins' );
+		if ( ! in_array( 'woocommerce/woocommerce.php', $active_plugins, true ) ) {
+			return;
+		}
+
+		// Upgrade the plugin.
+		// Todo: Remove this check in the next major release.
+		if ( ! get_transient( 'lvfw_migrated' ) ) {
+			require_once LVFW_INCLUDE_PATH . 'upgrade.php';
+		}
+
+		// Include required admin files.
 		require_once LVFW_INCLUDE_PATH . 'admin/loader.php';
+
+		// Include required frontend files.
+		require_once LVFW_INCLUDE_PATH . 'frontend/loader.php';
 	}
 }
 
 // Initialize the plugin.
 WooLinkedVariation::get_instance();
-

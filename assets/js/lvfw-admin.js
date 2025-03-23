@@ -1,4 +1,7 @@
 jQuery(document).ready(function ($) {
+	// Destructuring ajax objects
+	const { ajaxurl, product_placeholder, category_placeholder, tag_placeholder } = lvfw_ajax_object;
+
 	// Function to toggle visibility and initialize Select2
 	function toggleFields($container) {
 		const selectedSource = $container.find('.source-picker').val();
@@ -7,6 +10,7 @@ jQuery(document).ready(function ($) {
 		const $products = $container.find('.products-picker');
 		const $categories = $container.find('.categories-picker');
 		const $tags = $container.find('.tags-picker');
+		const nonce = $container.parents('form').find('input[name="lvfw_products_nonce"]').val();
 
 		// Safely destroy Select2 before hiding
 		if ($products.data('select2')) {
@@ -21,9 +25,6 @@ jQuery(document).ready(function ($) {
 			$tags.select2('destroy');
 		}
 
-		// Destructuring ajax objects
-		const { ajaxurl, product_placeholder, category_placeholder, tag_placeholder } = lvfw_ajax_object;
-
 		if (selectedSource === 'products') {
 			$products.show().select2({
 				width: "100%",
@@ -34,7 +35,7 @@ jQuery(document).ready(function ($) {
 				// data: data,
 				minimumInputLength: 3,
 				ajax: {
-					url: ajaxurl + '?action=lvfw_get_source_products', // Your REST API endpoint
+					url: ajaxurl + `?action=lvfw_get_source_products&nonce=${nonce}`, // Your REST API endpoint
 					dataType: 'json',
 					delay: 250, // Delay in milliseconds to avoid excessive API calls
 					data: function (params) {
@@ -61,7 +62,7 @@ jQuery(document).ready(function ($) {
 				// data: data,
 				minimumInputLength: 3,
 				ajax: {
-					url: ajaxurl + '?action=lvfw_get_source_taxonomy&taxonomy=product_cat', // Your REST API endpoint
+					url: ajaxurl + `?action=lvfw_get_source_taxonomy&taxonomy=product_cat&nonce=${nonce}`, // Your REST API endpoint
 					dataType: 'json',
 					delay: 250, // Delay in milliseconds to avoid excessive API calls
 					data: function (params) {
@@ -88,7 +89,7 @@ jQuery(document).ready(function ($) {
 				// data: data,
 				minimumInputLength: 3,
 				ajax: {
-					url: ajaxurl + '?action=lvfw_get_source_taxonomy&taxonomy=product_tag', // Your REST API endpoint
+					url: ajaxurl + `?action=lvfw_get_source_taxonomy&taxonomy=product_tag&nonce=${nonce}`, // Your REST API endpoint
 					dataType: 'json',
 					delay: 250, // Delay in milliseconds to avoid excessive API calls
 					data: function (params) {
@@ -131,5 +132,53 @@ jQuery(document).ready(function ($) {
 		axis: "y", // Allow sorting only vertically
 		cursor: "move", // Change cursor to "move" while dragging
 		placeholder: "ui-state-highlight", // Use a placeholder for the drop position
+	});
+
+	// Handle click event on the add variation button
+	$(document).on('click', '.add-variation', function () {
+		var thisElm = $(this);
+		var variations_key = thisElm.data('variations');
+
+		// Send ajax request to get the variation form
+		$.ajax({
+			url: ajaxurl,
+			type: 'GET',
+			data: {
+				action: 'lvfw_get_new_variation',
+				key: variations_key,
+				nonce: thisElm.parents('form').find('input[name="lvfw_products_nonce"]').val()
+			},
+			success: function (response) {
+				var obj = JSON.parse(response);
+				var $newVariation = $(obj.output);
+
+				// Append the new variation
+				$('.linked-variations').append($newVariation);
+
+				// Update the data-variations attribute
+				thisElm.data('variations', obj.key);
+
+				// Reinitialize the necessary event handlers and functionality
+				toggleFields($newVariation);
+				$newVariation.find('.source-picker').trigger('change');
+				$(".linked-variations").sortable("refresh");
+				$newVariation.find('.attributes').sortable({
+					axis: "y",
+					cursor: "move",
+					placeholder: "ui-state-highlight"
+				});
+			}
+		});
+	});
+
+	// Handle click event on the remove variation button
+	$(document).on('click', '.remove-variation', function () {
+		// before delete show confirm box
+		if (!confirm(lvfw_ajax_object.confirm_message)) {
+			return false;
+		}
+
+		// Remove the variation
+		$(this).closest('.linked-variation-item').remove();
 	});
 });

@@ -1,11 +1,11 @@
 === Linked Variation for WooCommerce ===
-Contributors: devsace, raazon
+Contributors: raazon
 Donate link: https://demos.devsace.com/plugins/linked-variation-for-woocommerce/contact/?source=donate-link
-Tags: variation, woocommerce, products, devsace, e-commerce, shop, woocommerce variation, linked variation, woocommerce attributes
-Requires at least: 4.5
-Tested up to: 5.7.2
-Requires PHP: 5.2.17
-Stable tag: 1.0.4
+Tags: variation, woocommerce products, woocommerce variation, linked variation, woocommerce attributes
+Requires at least: 6.0
+Tested up to: 6.7
+Requires PHP: 7.4
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -47,6 +47,13 @@ No, It's completely free!
 However, we can recommend [Linked Variations Premium by Iconic](https://iconicwp.com/products/woocommerce-linked-variations/?ref=razon).
 
 == Changelog ==
+
+= 2.0.0 =
+- Added support for multiple variation additions
+- Implemented attribute sorting
+- Enhanced overall plugin performance for PHP, CSS, and JavaScript
+- Improved data escaping, sanitization, and WPCS
+- Refined the Admin UI for a better user experience
 
 = 1.0.4 =
 - Fix upgrade issue

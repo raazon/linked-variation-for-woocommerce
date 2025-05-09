@@ -51,9 +51,6 @@ final class WooLinkedVariation {
 		// Fired when deactivate.
 		register_deactivation_hook( LVFW_FILE, array( $this, 'deactivate' ) );
 
-		// Load plugin textdomain.
-		add_action( 'init', array( $this, 'load_textdomain' ) );
-
 		// Admin notice if Woocommerce is not installed.
 		add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 
@@ -159,19 +156,6 @@ final class WooLinkedVariation {
 	 * @since 2.0.0
 	 */
 	public function deactivate(): void {}
-
-	/**
-	 * Load plugin textdomain
-	 *
-	 * @since 2.0.0
-	 */
-	public function load_textdomain(): void {
-		load_plugin_textdomain(
-			'linked-variation-for-woocommerce',
-			false,
-			LVFW_PATH . 'languages'
-		);
-	}
 
 	/**
 	 * Admin Notice.

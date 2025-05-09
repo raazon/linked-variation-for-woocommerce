@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Meta Box for Linked Variations.
  *
@@ -46,7 +47,8 @@ add_action( 'add_meta_boxes', 'lvfw_cpt_meta_box', 10, 1 );
  * @param object $post The post object.
  * @return void
  */
-function lvfw_cpt_meta_box_linked_variations( $post ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+function lvfw_cpt_meta_box_linked_variations( $post ) {
+ // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	require_once LVFW_INCLUDE_PATH . 'admin/output.php';
 }
 
@@ -56,7 +58,8 @@ function lvfw_cpt_meta_box_linked_variations( $post ) { // phpcs:ignore Generic.
  * @param object $post The post object.
  * @return void
  */
-function lvfw_cpt_meta_box_content_thank_you( $post ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+function lvfw_cpt_meta_box_content_thank_you( $post ) {
+ // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	printf(
 		'<p> %1$s <a href="https://wordpress.org/support/plugin/linked-variation-for-woocommerce/reviews/?filter=5" target="_blank">%2$s</a></p> <p>%3$s</p>',
 		esc_html__( 'Thank you for using our plugin. If you like our plugin please', 'linked-variation-for-woocommerce' ),
@@ -97,6 +100,11 @@ function lvfw_save_post_hook( $post_id ) {
 
 	// Check nonce for form validation.
 	$nonce = isset( $_REQUEST['lvfw_products_nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['lvfw_products_nonce'] ) ) : '';
+
+	if ( empty( $nonce ) ) {
+		return;
+	}
+
 	if ( ! wp_verify_nonce( $nonce, 'lvfw_products_nonce_action' ) ) {
 		wp_die( 'Invalid nonce or nonce verification failed!' );
 	}

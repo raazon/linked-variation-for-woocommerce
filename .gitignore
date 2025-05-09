@@ -34,3 +34,9 @@ Thumbs.db
 wordpress/
 build/
 dist/
+
+# Files like .zip, .DS_Store, .tar, .tar.gz, .tar.bz2
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2

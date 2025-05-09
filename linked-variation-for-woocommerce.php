@@ -3,7 +3,7 @@
  * Plugin Name:       Linked Variation for WooCommerce
  * Plugin URI:        https://raazon.com/
  * Description:       This is a helper plugin of WooCommerce built to link separate products together by attributes.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Author:            Razon
  * Author URI:        https://raazon.com/
  * License:           GPL-2.0+
@@ -97,7 +97,7 @@ final class WooLinkedVariation {
 	 * @return void
 	 */
 	public function constants(): void {
-		define( 'LVFW_VERSION', '2.0.0' );
+		define( 'LVFW_VERSION', '2.0.1' );
 		define( 'LVFW_FILE', trailingslashit( __FILE__ ) );
 		define( 'LVFW_BASENAME', plugin_basename( __FILE__ ) );
 		define( 'LVFW_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );

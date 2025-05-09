@@ -3,9 +3,9 @@ Contributors: raazon
 Donate link: https://demos.devsace.com/plugins/linked-variation-for-woocommerce/contact/?source=donate-link
 Tags: variation, woocommerce products, woocommerce variation, linked variation, woocommerce attributes
 Requires at least: 6.0
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
@@ -48,12 +48,15 @@ However, we can recommend [Linked Variations Premium by Iconic](https://iconicwp
 
 == Changelog ==
 
+= 2.0.1 =
+- Fix nonce error for new variation creation
+
 = 2.0.0 =
-- Added support for multiple variation additions
-- Implemented attribute sorting
-- Enhanced overall plugin performance for PHP, CSS, and JavaScript
-- Improved data escaping, sanitization, and WPCS
-- Refined the Admin UI for a better user experience
+- Add support for multiple variation additions
+- Implement attribute sorting
+- Enhance overall plugin performance for PHP, CSS, and JavaScript
+- Improv data escaping, sanitization, and WPCS
+- Refine the Admin UI for a better user experience
 
 = 1.0.4 =
 - Fix upgrade issue
@@ -64,15 +67,15 @@ Variation Template Not Found
 - Fix upgrade issue
 
 = 1.0.2 =
-Fix single variation not working
+- Fix single variation not working
 - Fix file missing bug
 
 = 1.0.1 =
-Fix single variation not working
-Fix empty variation li
-Fix linked product together without using variations
-Fix product ordering issue
-Added primary/common variation checkbox field
+- Fix single variation not working
+- Fix empty variation li
+- Fix linked product together without using variations
+- Fix product ordering issue
+- Add primary/common variation checkbox field
 
 = 1.0.0 =
-This initial release of this plugin
+-  Initial release of this plugin

@@ -16,8 +16,20 @@ defined('ABSPATH') || die('Cheatin&#8217; uh?');
  * @package Lvfw
  */
 function lvfw_frontend_enqueue_scripts() {
-	// Get current admin screen, or null.
-	// $screen = get_current_screen();
+	// Check if product single page.
+	if ( !is_singular('product') ) {
+		return;
+	}
+
+	// Check linked variations exist.
+	$linked_variations = array();
+	if ( function_exists('lvfw_find_linked_variation_post') ) {
+		$linked_variations = lvfw_find_linked_variation_post( get_the_ID() );
+	}
+
+	if ( empty( $linked_variations ) ) {
+		return;
+	}
 
 	// verify admin screen object.
 	if (is_singular('product')) {

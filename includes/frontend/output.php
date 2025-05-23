@@ -16,9 +16,26 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages dire
 		$label = wc_attribute_label( $attribute_key );
 		// Check if images should be shown.
 		$show_images = lvfw_should_show_images( $attribute_key, $linked_variations );
+
+		// get attribute value by key.
+		$current_attribute_names = array();
+		foreach ( $product_attributes_keys as $key ) {
+			$current_attribute_names[$key] = $product->get_attribute( $key );
+		}
 		?>
 		<div class="lvfw-attribute">
-			<span><?php echo esc_html( $label ); ?></span>
+			<span>
+				<span class="lvfw-current-label">
+					<?php echo esc_html( $label ); ?>:
+				</span>
+				<?php if ( ! empty( $current_attribute_names[$attribute_key] ) ) :
+					$current_attr_name = $current_attribute_names[$attribute_key];
+					?>
+					<span class="lvfw-current-name" data-original="<?php echo esc_attr( $current_attr_name ); ?>">
+						<?php echo esc_html( $current_attr_name ); ?>
+					</span>
+				<?php endif; ?>
+			</span>
 			<ul class="lvfw-attribute-options">
 				<?php foreach ( $options as $value => $product_id ) : ?>
 					<?php
@@ -125,3 +142,28 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages dire
 		height: var(--lvfw-attr-image-height);
 	}
 </style>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const attributes = document.querySelectorAll(".lvfw-attribute");
+
+		attributes.forEach(attribute => {
+			const currentName = attribute.querySelector(".lvfw-current-name");
+			const items = attribute.querySelectorAll(".lvfw-attribute-options .lvfw-product");
+
+			let activeItem = attribute.querySelector(".lvfw-product.active");
+			let activeTitle = activeItem ? activeItem.getAttribute("data-title") : currentName.textContent.trim();
+
+			items.forEach(item => {
+				item.addEventListener("mouseenter", () => {
+					const title = item.getAttribute("data-title");
+					if (title) currentName.textContent = title;
+				});
+
+				item.addEventListener("mouseleave", () => {
+					currentName.textContent = activeTitle;
+				});
+			});
+		});
+	});
+</script>

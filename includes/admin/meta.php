@@ -59,7 +59,7 @@ function lvfw_cpt_meta_box_linked_variations( $post ) {
  * @return void
  */
 function lvfw_cpt_meta_box_content_thank_you( $post ) {
- // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+ 	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 	printf(
 		'<p> %1$s <a href="https://wordpress.org/support/plugin/linked-variation-for-woocommerce/reviews/#new-post" target="_blank">%2$s</a></p> <p>%3$s</p>',
 		esc_html__( 'Thank you for using our plugin. If you like our plugin please', 'linked-variation-for-woocommerce' ),

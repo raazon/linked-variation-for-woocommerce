@@ -99,6 +99,10 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages dire
 		display: block;
 	}
 
+	.lvfw-attribute .lvfw-current-label {
+		font-weight: 600;
+	}
+
 	.lvfw-attribute ul {
 		margin: 0;
 		padding: 0;

@@ -48,6 +48,9 @@ However, we can recommend [Linked Variations Premium by Iconic](https://iconicwp
 
 == Changelog ==
 
+= 2.0.2 =
+- Fix showing all variations in frontend
+
 = 2.0.1 =
 - Fix nonce error for new variation creation
 

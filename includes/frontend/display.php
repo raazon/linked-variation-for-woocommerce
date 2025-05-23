@@ -29,6 +29,7 @@ function lvfw_display_linked_variation() {
 	$products = $linked_variations['products'] ?? array();
 
 	$linked_attributes = $linked_variations['attributes'] ?? array();
+	$linked_attributes_keys = array_column( $linked_attributes, 'name' );
 	$link_images       = isset( $link_data['images'] ) ? $link_data['images'] : array();
 
 	// Include the current product in filtering.
@@ -37,6 +38,20 @@ function lvfw_display_linked_variation() {
 	// Get product attributes dynamically.
 	$product_attributes      = $product->get_attributes();
 	$product_attributes_keys = array_keys( $product_attributes );
+	$product_attributes_keys = array_intersect( $product_attributes_keys, $linked_attributes_keys );
+	// Reorder $linked_attributes_keys based on saved order.
+	if( ! empty($linked_attributes_keys) ) {
+		// Initialize reordered array
+		$reordered_product_attributes_keys = [];
+		foreach ( $linked_attributes_keys as $key ) {
+			if ( array_key_exists( $key, $product_attributes ) ) {
+				$reordered_product_attributes_keys[] = $key;
+			}
+		}
+
+		// Reorder the product attributes keys
+		$product_attributes_keys = $reordered_product_attributes_keys;
+	}
 
 	if ( empty( $product_attributes_keys ) ) {
 		return; // No attributes found.

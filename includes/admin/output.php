@@ -30,8 +30,6 @@ if ( empty( $linked_variations ) ) {
 if ( empty( $linked_variations ) ) {
 	return;
 }
-
-$product_attributes = wc_get_attribute_taxonomies();
 ?>
 <div class="linked-variations">
 	<?php
@@ -103,6 +101,31 @@ $product_attributes = wc_get_attribute_taxonomies();
 					<div class="field-input">
 						<div class="attributes">
 							<?php
+							$product_attributes = wc_get_attribute_taxonomies();
+
+							// Reorder $product_attributes based on $attributes order.
+							if( ! empty($attributes) ) {
+								// Initialize reordered array.
+								$reordered_product_attributes = [];
+
+								// Loop through the $attributes array in order.
+								foreach ($attributes as $attr_id => $attr_data) {
+									if (isset($product_attributes["id:$attr_id"])) {
+										$reordered_product_attributes["id:$attr_id"] = $product_attributes["id:$attr_id"];
+									}
+								}
+
+								// Then, add remaining attributes that are not selected.
+								foreach ($product_attributes as $attr_id => $attr_data) {
+									if (!isset($reordered_product_attributes[$attr_id])) {
+										$reordered_product_attributes[$attr_id] = $attr_data;
+									}
+								}
+
+								// Replace original array with reordered one.
+								$product_attributes = $reordered_product_attributes;
+							}
+
 							if ( ! empty( $product_attributes ) ) :
 								foreach ( $product_attributes as $attribute_key => $attribute ) :
 									?>

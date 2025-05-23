@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages dire
 			$current_attribute_names[$key] = $product->get_attribute( $key );
 		}
 		?>
-		<div class="lvfw-attribute">
+		<div class="lvfw-attribute" role="group" aria-labelledby="<?php echo esc_attr( $label ); ?>-label">
 			<span>
 				<span class="lvfw-current-label">
 					<?php echo esc_html( $label ); ?>:

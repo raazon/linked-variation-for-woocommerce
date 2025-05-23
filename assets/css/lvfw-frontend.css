@@ -66,6 +66,12 @@
 	padding: var(--lvfw-attr-inner-padding);
 }
 
+body .lvfw-attribute ul li a:focus-visible {
+	outline: -webkit-focus-ring-color auto 1px;
+	outline-color: inherit;
+	outline-offset: 4px;
+}
+
 /* reset css */
 .lvfw-attribute ul li a:focus {
 	outline: none;

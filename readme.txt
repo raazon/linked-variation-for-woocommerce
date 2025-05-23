@@ -5,8 +5,8 @@ Tags: variation, woocommerce products, woocommerce variation, linked variation, 
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 2.0.2
-License: GPLv2 or later
+Stable tag: 2.0.3
+License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
 
 Linked separate products together by product attributes and More. Needs WooCommerce to work.
@@ -44,6 +44,13 @@ Alternatively, you can download the plugin using the download button on this pag
 No, It's completely free!
 
 == Changelog ==
+
+= 2.0.3 =
+- Add accessibility support for keyboard navigation
+- Add current attribute name on attribute label for hover and normal
+- Improve load assets when linked variation exist in single product
+- Improve separate inline assets CSS & JS to external files
+- Improve overall attribute label style
 
 = 2.0.2 =
 - Fix showing all variations in frontend

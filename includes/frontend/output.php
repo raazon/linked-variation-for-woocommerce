@@ -28,11 +28,9 @@ defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' ); // Cannot access pages dire
 				<span class="lvfw-current-label">
 					<?php echo esc_html( $label ); ?>:
 				</span>
-				<?php if ( ! empty( $current_attribute_names[$attribute_key] ) ) :
-					$current_attr_name = $current_attribute_names[$attribute_key];
-					?>
-					<span class="lvfw-current-name" data-original="<?php echo esc_attr( $current_attr_name ); ?>">
-						<?php echo esc_html( $current_attr_name ); ?>
+				<?php if ( ! empty( $current_attribute_names[$attribute_key] ) ) : ?>
+					<span class="lvfw-current-name">
+						<?php echo esc_html( $current_attribute_names[$attribute_key] ); ?>
 					</span>
 				<?php endif; ?>
 			</span>

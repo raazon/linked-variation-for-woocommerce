@@ -1,6 +1,6 @@
 === Linked Variation for WooCommerce ===
 Contributors: raazon
-Donate link: https://wise.com/pay/me/razonp
+Donate link: https://buymeacoffee.com/razon
 Tags: variation, woocommerce products, woocommerce variation, linked variation, woocommerce attributes
 Requires at least: 6.0
 Tested up to: 6.8
